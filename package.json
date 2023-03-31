@@ -1,10 +1,13 @@
 {
   "name": "b22l-skodaji1-ktpw2-semestral-project",
   "version": "1.0.0",
-  "description": "Package which contains my semestral project done for subject 'Technologies for Web Publishing II'",
-  "main": "index.js",
+  "description": "Package which contains my semestral project done for subject 'Technologies for Web Publishing II' at Faculty of Informatics and Management, University of Hradec Králové.",
+  "main": "./dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc --build",
+    "start": "node ./dist/index.js",
+    "dev": "npx nodemon ./dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,7 +20,11 @@
   },
   "homepage": "https://github.com/byte98/uhk-ktpw2#readme",
   "dependencies": {
+    "@types/ejs": "^3.1.2",
+    "@types/express": "^4.17.17",
     "ejs": "^3.1.9",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "tsc": "^2.0.4",
+    "typescript": "^5.0.3"
   }
 }
