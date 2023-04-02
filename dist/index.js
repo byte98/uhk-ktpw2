@@ -22,4 +22,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const configuration_1 = __importDefault(require("./configuration"));
 const server_1 = __importDefault(require("./server"));
 let server = new server_1.default(configuration_1.default.port, configuration_1.default.routes);
+// Check, whether debug flag (-D) is set
+process.argv.forEach(function (val, idx, args) {
+    if (val === "-D") {
+        configuration_1.default.debug = true;
+    }
+});
 server.start();

@@ -16,6 +16,8 @@
 // along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
 
 import express from 'express';
+import http from 'http';
+import path from 'path';
 import IController from './controller/icontroller';
 import Configuration from './configuration';
 
@@ -57,6 +59,7 @@ export default class Server
     private init(): void
     {
         this.app.set("view engine", "ejs");
+        this.app.use(express.static(path.join(process.cwd() , "dist", "public")));
         this.initRoutes();
     }
 
@@ -94,18 +97,30 @@ export default class Server
      */
     private handleRequest(req: express.Request, res: express.Response, ctrl: IController, met: "GET" | "POST" | "PUT" | "DELETE")
     {
-        if (Configuration.debug)
-        {
-            console.log("Incoming request (" + req.headers['x-forwarded-for'] || req.socket.remoteAddress + ", " + met);
-        }
         let response: string | number = ctrl.takeControl(req, met);
+        let addr: string | undefined = req.header("x-forwarded.for");
+        if (typeof addr === "undefined")
+        {
+            addr = req.socket.remoteAddress;
+        }
+        let debugMsg: string = "REQUEST (" + addr + ", " + met + ") -> ";
         if (typeof response === "string")
         {
+            debugMsg += 200 + ": " + http.STATUS_CODES[200];
+            if (Configuration.debug)
+            {
+                console.log(debugMsg);
+            }
             res.setHeader("Content-Type", "text/html");
             res.send(response);
         }
         else
         {
+            debugMsg += response + ": " + http.STATUS_CODES[response];
+            if (Configuration.debug)
+            {
+                console.log(debugMsg);
+            }
             res.sendStatus(response);
         }
     }

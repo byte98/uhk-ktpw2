@@ -19,6 +19,7 @@ import { Request } from "express";
 import IController from "./icontroller";
 import ejs from "ejs";
 import path from "path";
+import fs from 'fs';
 
 /**
  * Class which can handle behaviour of home page
@@ -30,9 +31,7 @@ export default class HomePageController implements IController
         let reti: string | number = 405;
         if (method === "GET")
         {
-            ejs.renderFile(path.join(__dirname, "view", "homepage.ejs")).then(function(content: string){
-                reti = content;
-            });
+            reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "homepage.ejs"), "utf-8"));
         }
         return reti;
     }

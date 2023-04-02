@@ -1,0 +1,98 @@
+/**
+ * Copyright (C) 2023 Jiri Skoda <skodaji1@uhk.cz>
+ * 
+ * This file is part of b22l-skodaji1-ktpw2-semestral-project.
+ * 
+ * b22l-skodaji1-ktpw2-semestral-project is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * b22l-skodaji1-ktpw2-semestral-project is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+header{
+    height: 148px;
+}
+
+h1{
+    font-size: 36pt;
+    padding: 10px;
+    padding-bottom: 11px;
+    font-weight: 100;
+    color: white;
+    background: rgb(32,94,145);
+    background: -moz-linear-gradient(45deg, rgba(32,94,145,1) 5%, rgba(78,198,217,1) 100%);
+    background: -webkit-linear-gradient(45deg, rgba(32,94,145,1) 5%, rgba(78,198,217,1) 100%);
+    background: linear-gradient(45deg, rgba(32,94,145,1) 5%, rgba(78,198,217,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#205e91",endColorstr="#4ec6d9",GradientType=1); 
+}
+
+h1::before{
+    content: url("../icons/calendar.png");
+    height: 36pt;
+    margin-right: 1rem;
+    vertical-align: middle;
+}
+
+nav{
+    background: linear-gradient(hsla(0,0%,100%,.5),hsla(0,0%,100%,.3) 45%,rgba(0,0,0,.1) 50%,rgba(0,0,0,.1) 75%,hsla(0,0%,100%,.5));
+    background-color: rgb(24, 74, 135);
+}
+
+nav button{
+    background: none;
+    border: none;
+    color: white;
+    box-shadow: none;
+    line-height: 48px;
+    height: 48px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+nav button::before{
+    padding: 0 5px 0 0;
+    vertical-align: -6px;
+}
+
+nav button[value=event-add]::before
+{
+    content: url("../icons/add24.png");
+}
+
+nav button:hover, nav button:focus, nav button:focus-visible
+{
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+nav button:active{
+    background-color: rgba(255, 255, 255, 0.3);
+}
+nav button:disabled
+{
+    visibility: hidden;
+}
+
+main{
+    background-image: url("../images/1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: calc(100vw);
+    height: calc(100vh - 148px);
+    padding: 10px;
+}
+
+

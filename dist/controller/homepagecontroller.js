@@ -21,6 +21,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const ejs_1 = __importDefault(require("ejs"));
 const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 /**
  * Class which can handle behaviour of home page
  */
@@ -28,9 +29,7 @@ class HomePageController {
     takeControl(req, method) {
         let reti = 405;
         if (method === "GET") {
-            ejs_1.default.renderFile(path_1.default.join(__dirname, "view", "homepage.ejs")).then(function (content) {
-                reti = content;
-            });
+            reti = ejs_1.default.render(fs_1.default.readFileSync(path_1.default.join(process.cwd(), "dist", "view", "homepage.ejs"), "utf-8"));
         }
         return reti;
     }

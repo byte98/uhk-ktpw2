@@ -28,7 +28,7 @@ class Configuration {
 /**
  * Flag, wherher debugging messages should be emitted (TRUE) or not (FALSE)
  */
-Configuration.debug = true;
+Configuration.debug = false;
 /**
  * Definition of correct controller for each path
  */
@@ -38,5 +38,5 @@ Configuration.routes = [
 /**
  * Port on which will server run
  */
-Configuration.port = 8080;
+Configuration.port = 8088;
 exports.default = Configuration;

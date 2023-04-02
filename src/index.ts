@@ -22,4 +22,12 @@ let server: Server = new Server(
     Configuration.port,
     Configuration.routes
 );
+
+// Check, whether debug flag (-D) is set
+process.argv.forEach(function(val: string, idx: number, args: string[]){
+    if (val === "-D")
+    {
+        Configuration.debug = true;
+    }
+});
 server.start();

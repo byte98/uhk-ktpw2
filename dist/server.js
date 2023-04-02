@@ -20,6 +20,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const http_1 = __importDefault(require("http"));
+const path_1 = __importDefault(require("path"));
 const configuration_1 = __importDefault(require("./configuration"));
 /**
  * Class which represents server which can respond to all requests
@@ -40,6 +42,7 @@ class Server {
      */
     init() {
         this.app.set("view engine", "ejs");
+        this.app.use(express_1.default.static(path_1.default.join(process.cwd(), "dist", "public")));
         this.initRoutes();
     }
     /**
@@ -72,15 +75,25 @@ class Server {
      * @param met HTTP method of request
      */
     handleRequest(req, res, ctrl, met) {
-        if (configuration_1.default.debug) {
-            console.log("Incoming request (" + req.headers['x-forwarded-for'] || req.socket.remoteAddress + ", " + met);
-        }
         let response = ctrl.takeControl(req, met);
+        let addr = req.header("x-forwarded.for");
+        if (typeof addr === "undefined") {
+            addr = req.socket.remoteAddress;
+        }
+        let debugMsg = "REQUEST (" + addr + ", " + met + ") -> ";
         if (typeof response === "string") {
+            debugMsg += 200 + ": " + http_1.default.STATUS_CODES[200];
+            if (configuration_1.default.debug) {
+                console.log(debugMsg);
+            }
             res.setHeader("Content-Type", "text/html");
             res.send(response);
         }
         else {
+            debugMsg += response + ": " + http_1.default.STATUS_CODES[response];
+            if (configuration_1.default.debug) {
+                console.log(debugMsg);
+            }
             res.sendStatus(response);
         }
     }

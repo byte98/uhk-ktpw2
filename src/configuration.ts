@@ -26,7 +26,7 @@ export default class Configuration
     /**
      * Flag, wherher debugging messages should be emitted (TRUE) or not (FALSE)
      */
-    public static readonly debug: boolean = true;
+    public static debug: boolean = false;
 
     /**
      * Definition of correct controller for each path
@@ -38,6 +38,6 @@ export default class Configuration
     /**
      * Port on which will server run
      */
-    public static readonly port: number = 8080;
+    public static readonly port: number = 8088;
 
 }
