@@ -1,6 +1,9 @@
 # Visual Studio Code files
 .vscode
 
+# Database files
+db
+
 # Logs
 logs
 *.log

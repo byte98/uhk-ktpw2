@@ -20,6 +20,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const body_parser_1 = __importDefault(require("body-parser"));
 const http_1 = __importDefault(require("http"));
 const path_1 = __importDefault(require("path"));
 const configuration_1 = __importDefault(require("./configuration"));
@@ -43,6 +44,7 @@ class Server {
     init() {
         this.app.set("view engine", "ejs");
         this.app.use(express_1.default.static(path_1.default.join(process.cwd(), "dist", "public")));
+        this.app.use(body_parser_1.default.urlencoded({ extended: true }));
         this.initRoutes();
     }
     /**

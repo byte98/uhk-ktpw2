@@ -23,10 +23,23 @@ var __window_counter = 0;
 /**
  * Class which can handle all windows
  */
-class WindowManager
-{
-    
-}
+class WindowManager{
+    /**
+     * Array of all created windows
+     */
+    _windows = array();
+
+    /**
+     * Creates new window
+     * @param {string} path Path to content of window
+     * @param {string} title Title of window
+     * @returns {Window} Newly created window
+     */
+    createWindow(path, title)
+    {
+
+    }
+};
 
 /**
  * Class which represents window in application
@@ -88,18 +101,6 @@ class Window{
     }
 
     /**
-     * Sets width style property
-     * @param {string} width New value of width
-     */
-    setWidth(width)
-    {
-        if (this._div != undefined)
-        {
-            this._div.style.maxWidth = width;
-        }
-    }
-
-    /**
      * Generates HTML representation of window
      */
     async _generateHTML()
@@ -142,10 +143,7 @@ class Window{
                     {
                         let closeButton = document.createElement("button");
                         closeButton.setAttribute("aria-label", "Close");
-                        $(closeButton).on("click", function(){
-                            console.log(this._id);
-                            $("#" + this._id).remove();
-                        });
+                        closeButton.classList.add("exit-button");
                         titleControlsDiv.appendChild(closeButton);
                     }
                 titleDiv.appendChild(titleControlsDiv);
@@ -167,7 +165,7 @@ class Window{
      */
     async show()
     {
-        const delta = 0;
+        const delta = 40;
         this._div = await this._generateHTML();
         let body = document.getElementsByTagName("body")[0];
         body.appendChild(this._div);
@@ -202,6 +200,18 @@ class Window{
         });
         $(this._div).resizable({
             "containment": $(main)
+        });
+        let ref = this._div;
+        $(this._div).find("button.exit-button").on("click", function(){
+            $(ref).animate({
+                "opacity": 0,
+                "width": "-=" + delta.toString(),
+                "height": "-=" + delta.toString(),
+                "left": "+=" + (delta / 2).toString(),
+                "top": "+=" + (delta / 2).toString()
+            }, 500, "easeInOutQuart", function(){
+                $(ref).remove();
+            });
         });
     }
 }

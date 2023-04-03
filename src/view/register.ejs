@@ -20,25 +20,25 @@
 <div id="register-content" class="win7">
     <section>
         <h2>Registrace</h2>
-        <form action="./register" method="PUT">
+        <form action="./register" method="post">
             <div class="column win7">
                 <label for="register-name">Jméno</label>
-                <input tabindex="10" type="text" id="register-name" required>
+                <input name="name" tabindex="10" type="text" id="register-name" required>
                 <label for="register-username">Uživatelské jméno</label>
-                <input tabindex="12" type="text" id="register-username">
+                <input name="username" tabindex="12" type="text" id="register-username">
                 <label for="register-password">Heslo</label>
-                <input tabindex="14" type="password" id="register-password">
+                <input name="password" tabindex="14" type="password" id="register-password">
             </div>
             <div class="column win7">
                 <label for="register-surname">Příjmení</label>
-                <input tabindex="11" type="text" id="register-surname" required>
+                <input name="surname" tabindex="11" type="text" id="register-surname" required>
                 <label for="register-mail">E-mail</label>
-                <input tabindex="13" type="text" id="register-mail">
+                <input name="mail" tabindex="13" type="text" id="register-mail">
                 <label for="register-passworda">Heslo znovu</label>
                 <input tabindex="15" type="password" id="register-passworda">
             </div>
             <div class="row win7">
-                <button tabindex="16" type="reset">Zrušit</button>
+                <button tabindex="16" type="reset" class="exit-button">Zrušit</button>
                 <button tabindex="17" type="submit">OK</button>
             </div>
         </form>
