@@ -23,6 +23,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="./styles/jquery-ui.min.css">
+    <link type="text/css" rel="stylesheet" href="./styles/jquery-ui.structure.min.css">
     <link type="text/css" rel="stylesheet" href="./styles/7.scoped.css">
     <link type="text/css" rel="stylesheet" href="./styles/global.css">
     <link type="text/css" rel="stylesheet" href="./styles/homepage.css">
@@ -40,18 +42,22 @@
         </nav>
     </header>
     <main>
-        <article>
+        <section>
             <h2>Vítejte</h2>
             <p>Pro pokračování se, prosím, přihlašte nebo registrujte.</p>
             <ul>
                 <li>
-                    <button>Přihlásit se</button>
+                    <button id="login-button" class="arrow-button"><i class="right"></i>Přihlásit se</button>
                 </li>
                 <li>
-                    <button>Registrovat se</button>
+                    <button id="register-button" class="arrow-button"><i class="right"></i>Registrovat se</button>
                 </li>
             </ul>
-        </article>
+        </section>
     </main>
+    <script src="./scripts/jquery-3.6.4.min.js"></script>
+    <script src="./scripts/jquery-ui.min.js"></script>
+    <script src="./scripts/windows.js"></script>
+    <script src="./scripts/homepage.js"></script>
 </body>
 </html>
