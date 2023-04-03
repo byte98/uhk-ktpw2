@@ -1,0 +1,66 @@
+/**
+ * Copyright (C) 2023 Jiri Skoda <developer@skodaj.cz>
+ * 
+ * This file is part of b22l-skodaji1-ktpw2-semestral-project.
+ * 
+ * b22l-skodaji1-ktpw2-semestral-project is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * b22l-skodaji1-ktpw2-semestral-project is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#register-content{
+    background-color: white;
+    padding: 10px;
+}
+
+#register-content h2{
+    font-weight: 100;
+    color: cornflowerblue;
+}
+
+#register-content label{
+    display: block;
+}
+
+
+#register-content form .column{
+    display: inline-block;
+    width: calc(50% - 20px);
+}
+
+#register-content .column:first-child
+{
+    margin-right: 20px;
+}
+
+#register-content .column input{
+    display: block;
+    margin-bottom: 1rem;
+}
+
+#register-content .column > *{
+    width: 100%;
+}
+
+#register-content .row{
+    text-align: right;
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin: 0px -10px -10px -10px;
+}
+
+#register-content .row > button{
+    padding: 10px 40px 10px 40px;
+    margin: 5px;
+    width: 128px;
+    text-align: center;
+}

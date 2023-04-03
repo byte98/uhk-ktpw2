@@ -20,6 +20,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const homepagecontroller_1 = __importDefault(require("./controller/homepagecontroller"));
+const registercontroller_1 = __importDefault(require("./controller/registercontroller"));
 /**
  * Class which holds whole configuration of server
  */
@@ -33,7 +34,8 @@ Configuration.debug = false;
  * Definition of correct controller for each path
  */
 Configuration.routes = [
-    { path: "/", controller: new homepagecontroller_1.default() }
+    { path: "/", controller: new homepagecontroller_1.default() },
+    { path: "/register", controller: new registercontroller_1.default() }
 ];
 /**
  * Port on which will server run

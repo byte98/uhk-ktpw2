@@ -21,6 +21,14 @@
 var __window_counter = 0;
 
 /**
+ * Class which can handle all windows
+ */
+class WindowManager
+{
+    
+}
+
+/**
  * Class which represents window in application
  */
 class Window{
@@ -144,7 +152,7 @@ class Window{
                 windowDiv.appendChild(titleDiv);
                 let windowBody = document.createElement("div");
                 windowBody.classList.add("window-body");
-                windowBody.classList.add("has-space");
+                //windowBody.classList.add("has-space");
                 let req = await fetch(this._path);
                 let content = await req.text();
                 windowBody.innerHTML = content;
@@ -165,11 +173,11 @@ class Window{
         body.appendChild(this._div);
         this._div.style.visibility = "hidden";
         let main = document.getElementsByTagName("main")[0];
-        let leftFrom = $(main).position().left + ($(main).width() / 2) + (delta / 2);
+        let leftFrom = $(main).position().left + ($(main).width() / 2)- ($(this._div).width() / 2) + (delta / 2);
         let topFrom = $(main).position().top + ($(main).height() / 2) - ($(this._div).height() / 2) + (delta / 2);
         let widthFrom = $(this._div).width() - delta;
         let heightFrom = $(this._div).height() - delta;
-        let leftTo = leftFrom + (delta / 2);
+        let leftTo = leftFrom - (delta / 2);
         let topTo = topFrom - (delta / 2);
         let widthTo = widthFrom + delta;
         let heightTo = heightFrom + delta;
@@ -188,5 +196,12 @@ class Window{
             "top": topTo,
             "left": leftTo
         }, 500, "easeInOutQuart");
+        $(this._div).draggable({
+            "handle": $(this._div).find(".title-bar"),
+            "containment": $(main)
+        });
+        $(this._div).resizable({
+            "containment": $(main)
+        });
     }
 }

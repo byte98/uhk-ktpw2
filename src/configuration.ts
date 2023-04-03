@@ -17,6 +17,7 @@
 
 import HomePageController from "./controller/homepagecontroller";
 import IController from "./controller/icontroller";
+import RegisterController from "./controller/registercontroller";
 
 /**
  * Class which holds whole configuration of server
@@ -32,7 +33,8 @@ export default class Configuration
      * Definition of correct controller for each path
      */
     public static readonly routes: Array<{path: string, controller: IController}> =  [
-        {path: "/", controller: new HomePageController()}
+        {path: "/", controller: new HomePageController()},
+        {path: "/register", controller: new RegisterController()}
     ];
 
     /**
