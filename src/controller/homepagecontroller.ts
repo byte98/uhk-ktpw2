@@ -26,7 +26,7 @@ import fs from 'fs';
  */
 export default class HomePageController implements IController
 {
-    takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE"): string | number
+    async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE"): Promise<string | number>
     {
         let reti: string | number = 405;
         if (method === "GET")

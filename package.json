@@ -6,10 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx rimraf ./dist && npx tsc --build && npx copyfiles -f ./src/public/styles/*.* ./dist/public/styles/ && npx copyfiles -f ./src/public/scripts/*.js ./dist/public/scripts/ && npx copyfiles -f ./src/public/images/*.* ./dist/public/images/ && npx copyfiles -f ./src/public/icons/*.* ./dist/public/icons/ && npx copyfiles -f ./src/view/*.* ./dist/view/",
-    "start": "mongod -dbpath ./db > /dev/null& node ./dist/index.js",
-    "startdebug": "mongod -dbpath ./db > /dev/null & node ./dist/index.js -D",
+    "start": "npm run db & node ./dist/index.js",
+    "startdebug": "npm run db & node ./dist/index.js -D",
     "prod": "npm run build && npm run start",
-    "debug": "npm run build && npm run startdebug"
+    "debug": "npm run build && npm run startdebug",
+    "db": "mongod --dbpath ./db --port 27017 > /dev/null",
+    "dbverbose": "mongod --dbpath ./db --port 27017"
   },
   "repository": {
     "type": "git",

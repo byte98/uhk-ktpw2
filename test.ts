@@ -1,5 +1,4 @@
-"use strict";
-// Copyright (C) 2023 Jiri Skoda <skodaji1@uhk.cz>
+// Copyright (C) 2023 Jiri Skoda <developer@skodaj.cz>
 // 
 // This file is part of b22l-skodaji1-ktpw2-semestral-project.
 // 
@@ -15,4 +14,12 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
-Object.defineProperty(exports, "__esModule", { value: true });
+
+console.log("running");
+
+import mongoose, { Schema, model, mongo } from "mongoose";
+import Configuration from "./src/configuration";
+import UserModel, { IUser } from "./src/model/user";
+
+let p = UserModel.getByUsername("betate1");
+console.log(p);

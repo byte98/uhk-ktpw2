@@ -20,13 +20,14 @@ import IController from "./icontroller";
 import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
+import UserModel, { IUser } from "../model/user";
 
 /**
  * Class which controls behaviour of register page
  */
 export default class RegisterController implements IController
 {
-    takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE"): string | number {
+    async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE"): Promise<string | number> {
         let reti: string | number = 405;
         if (method === "GET")
         {
@@ -34,7 +35,8 @@ export default class RegisterController implements IController
         }
         else if (method == "POST")
         {
-            console.log(req.body);
+            reti = 200;
+            
         }
         return reti;
     }

@@ -42,4 +42,9 @@ export default class Configuration
      */
     public static readonly port: number = 8088;
 
+    /**
+     * Connection string to database
+     */
+    public static readonly db: string = "mongodb://127.0.0.1:27017/calendar";
+
 }

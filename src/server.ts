@@ -99,32 +99,33 @@ export default class Server
      */
     private handleRequest(req: express.Request, res: express.Response, ctrl: IController, met: "GET" | "POST" | "PUT" | "DELETE")
     {
-        let response: string | number = ctrl.takeControl(req, met);
-        let addr: string | undefined = req.header("x-forwarded.for");
-        if (typeof addr === "undefined")
-        {
-            addr = req.socket.remoteAddress;
-        }
-        let debugMsg: string = "REQUEST (" + addr + ", " + met + ") -> ";
-        if (typeof response === "string")
-        {
-            debugMsg += 200 + ": " + http.STATUS_CODES[200];
-            if (Configuration.debug)
+        ctrl.takeControl(req, met).then(function(result: string | number){
+            let addr: string | undefined = req.header("x-forwarded.for");
+            if (typeof addr === "undefined")
             {
-                console.log(debugMsg);
+                addr = req.socket.remoteAddress;
             }
-            res.setHeader("Content-Type", "text/html");
-            res.send(response);
-        }
-        else
-        {
-            debugMsg += response + ": " + http.STATUS_CODES[response];
-            if (Configuration.debug)
+            let debugMsg: string = "REQUEST (" + addr + ", " + met + ") -> ";
+            if (typeof result === "string")
             {
-                console.log(debugMsg);
+                debugMsg += 200 + ": " + http.STATUS_CODES[200];
+                if (Configuration.debug)
+                {
+                    console.log(debugMsg);
+                }
+                res.setHeader("Content-Type", "text/html");
+                res.send(result);
             }
-            res.sendStatus(response);
-        }
+            else
+            {
+                debugMsg += result + ": " + http.STATUS_CODES[result];
+                if (Configuration.debug)
+                {
+                    console.log(debugMsg);
+                }
+                res.sendStatus(result);
+            }
+        });
     }
 
     /**

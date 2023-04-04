@@ -28,5 +28,5 @@ export default interface IController
      * @param method HTTP method 
      * @returns Content which will be sent to the user or HTTP response code, if request cannot be handled
      */
-    takeControl(req: express.Request, method: 'GET' | 'POST' | 'PUT' | 'DELETE'): string | number;
+    takeControl(req: express.Request, method: 'GET' | 'POST' | 'PUT' | 'DELETE'): Promise<string | number>;
 }
