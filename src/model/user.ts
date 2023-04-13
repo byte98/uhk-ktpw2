@@ -77,35 +77,49 @@ export default class UserModel{
      * @param username Username which will be checked
      * @returns User with defined username or NULL if there is no such user
      */
-    public static getByUsername(username: string): IUser | null
+    public static async getByUsername(username: string): Promise<IUser | null>
     {
         let reti: IUser | null = null;
-        let connection: Promise<typeof mongoose>;
-        connection =  mongoose.connect(Configuration.db);
-        connection.then(function(conn: typeof mongoose){
-            let query :mongoose.Query<object | null, {}, {}, IUser> =  User.findOne({"username": username});
-            let result: Promise<object | null> = query.exec();
-            result.then(function(data: object | null){
-                // reti =  new class implements IUser{
-                //     id: number = data.id;
-                //     name: string;
-                //     surname: string;
-                //     username: string;
-                //     email: string;
-                //     password: string;
+        let connection: typeof mongoose;
+        connection =  await mongoose.connect(Configuration.db);
+        let query :mongoose.Query<any | null, {}, {}, IUser> =  User.findOne({"username": username});
+        let result: any | null = await query.exec();
+        if (result != null)
+        {
+            reti = new class implements IUser{
+                name: string = result.name;
+                surname: string = result.surname;
+                username: string = result.username;
+                email: string = result.email;
+                password: string = result.password;
+            };
+        }
+        return reti;
+    }
 
-                // };
-                if (data == null)
-                {
-                    reti = null;
-                }
-                else
-                {
-                    let uname: string;
-                }
-                console.log(data);
-            })
-        });
+    /**
+     * Gets user by its e-mail
+     * @param email E-mail of user which will be checked
+     * @returns User with defined e-mail or NULL if there is no such user
+     */
+    public static async getByEmail(email: string): Promise<IUser | null>
+    {
+        let reti: IUser | null = null;
+        let connection: typeof mongoose;
+        connection =  await mongoose.connect(Configuration.db);
+        let query :mongoose.Query<any | null, {}, {}, IUser> =  User.findOne({"email": email});
+        let result: any | null = await query.exec();
+        if (result != null)
+        {
+            reti = new class implements IUser{
+                name: string = result.name;
+                surname: string = result.surname;
+                username: string = result.username;
+                email: string = result.email;
+                password: string = result.password;
+
+            };
+        }
         return reti;
     }
 }

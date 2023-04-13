@@ -16,6 +16,8 @@
 // along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
 
 import express from 'express';
+import session from 'express-session';
+import machineId, { machineIdSync } from 'node-machine-id';
 import body_parser from 'body-parser';
 import http from 'http';
 import path from 'path';
@@ -62,6 +64,11 @@ export default class Server
         this.app.set("view engine", "ejs");
         this.app.use(express.static(path.join(process.cwd() , "dist", "public")));
         this.app.use(body_parser.urlencoded({extended: true}));
+        this.app.use(session({
+            resave: false,
+            saveUninitialized: false,
+            secret: machineIdSync()
+        }));
         this.initRoutes();
     }
 

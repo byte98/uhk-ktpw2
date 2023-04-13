@@ -110,7 +110,8 @@ class Window{
             reti.classList.add("app-window");
             reti.classList.add("win7");
             reti.id = this._id;
-            reti.style.maxWidth = "33%";
+            reti.style.minWidth = "400px";
+            reti.style.width = "600px";
             let windowDiv = document.createElement("div");
             windowDiv.classList.add("window");
             windowDiv.classList.add("active");
