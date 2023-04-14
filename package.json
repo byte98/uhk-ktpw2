@@ -38,7 +38,6 @@
     "jquery": "^3.6.4",
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.3",
-    "node-machine-id": "^1.1.12",
     "nodemon": "^2.0.22",
     "rimraf": "^4.4.1",
     "tsc": "^2.0.4",

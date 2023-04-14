@@ -16,6 +16,7 @@
 // along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
 
 import express from 'express';
+import Transition from './transition';
 
 /**
  * Interface declaring contract for all controllers
@@ -26,7 +27,8 @@ export default interface IController
      * Tells controller to take control of processing request
      * @param req Structure with information about request
      * @param method HTTP method 
-     * @returns Content which will be sent to the user or HTTP response code, if request cannot be handled
+     * @param data Any additional data which can be passed to controller
+     * @returns Content which will be sent to the user or HTTP response code, if request cannot be handled or transition of request
      */
-    takeControl(req: express.Request, method: 'GET' | 'POST' | 'PUT' | 'DELETE'): Promise<string | number>;
+    takeControl(req: express.Request, method: 'GET' | 'POST' | 'PUT' | 'DELETE', data: any): Promise<string | number | Transition>;
 }

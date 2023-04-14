@@ -15,8 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
 
-import mongoose, { Schema, model, mongo } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import Configuration from "../configuration";
+import {createHash} from "crypto";
 
 /**
  * Interface defining contract for users data objects
@@ -121,5 +122,28 @@ export default class UserModel{
             };
         }
         return reti;
+    }
+
+    /**
+     * Creates new user
+     * @param name Name of new user
+     * @param surname Surname of new user
+     * @param username Username of new user
+     * @param email E-mail of new user
+     * @param password Password of new user
+     */
+    public static async create(
+        name: string, surname: string, username: string, email: string, password: string
+    )
+    {
+        await mongoose.connect(Configuration.db);
+        const user = new User({
+            name: name,
+            surname: surname,
+            username: username,
+            email: email,
+            password: createHash("sha512").update(password).digest("hex").toString()
+        });
+        await user.save();
     }
 }

@@ -82,6 +82,11 @@ class Window{
     _div = null;
 
     /**
+     * Flag, whether window is visible (TRUE) or not (FALSE)
+     */
+    _visible = false;
+
+    /**
      * 
      * @param {string} path Path to content of window
      * @param {string} title Title of window

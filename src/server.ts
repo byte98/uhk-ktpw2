@@ -17,12 +17,12 @@
 
 import express from 'express';
 import session from 'express-session';
-import machineId, { machineIdSync } from 'node-machine-id';
 import body_parser from 'body-parser';
 import http from 'http';
 import path from 'path';
 import IController from './controller/icontroller';
 import Configuration from './configuration';
+import Transition from './controller/transition';
 
 /**
  * Class which represents server which can respond to all requests
@@ -67,7 +67,7 @@ export default class Server
         this.app.use(session({
             resave: false,
             saveUninitialized: false,
-            secret: machineIdSync()
+            secret: Configuration.sessionSecret
         }));
         this.initRoutes();
     }
@@ -80,21 +80,40 @@ export default class Server
         for (let i: number = 0; i < this.routes.length; i++)
         {
             this.app.get(this.routes[i].path, (req: express.Request, res: express.Response) => {
-                this.handleRequest(req, res, this.routes[i].controller, "GET");
+                this.handleRequest(req, res, this.routes[i].controller, "GET", null);
             });
             this.app.post(this.routes[i].path, (req: express.Request, res: express.Response) => {
                 res.setHeader("Content-Type", "text/html");
-                this.handleRequest(req, res, this.routes[i].controller, "POST");
+                this.handleRequest(req, res, this.routes[i].controller, "POST", null);
             });
             this.app.put(this.routes[i].path, (req: express.Request, res: express.Response) => {
                 res.setHeader("Content-Type", "text/html");
-                this.handleRequest(req, res, this.routes[i].controller, "PUT");
+                this.handleRequest(req, res, this.routes[i].controller, "PUT", null);
             });
             this.app.delete(this.routes[i].path, (req: express.Request, res: express.Response) => {
                 res.setHeader("Content-Type", "text/html");
-                this.handleRequest(req, res, this.routes[i].controller, "DELETE");
+                this.handleRequest(req, res, this.routes[i].controller, "DELETE", null);
             });
         }
+    }
+
+    /**
+     * Gets controller for specific path
+     * @param path Path for which controller will be found
+     * @returns Controller for specific path or NULL, if there is no such controller
+     */
+    private getController(path: string): IController | null
+    {
+        let reti: IController | null = null;
+        for (let i: number = 0; i < this.routes.length; i++)
+        {
+            if (this.routes[i].path == path)
+            {
+                reti = this.routes[i].controller;
+                break;
+            }
+        }
+        return reti;
     }
 
     /**
@@ -103,10 +122,12 @@ export default class Server
      * @param res Refenrece to responder to request
      * @param ctrl Controller of request
      * @param met HTTP method of request
+     * @param data Any additional data
      */
-    private handleRequest(req: express.Request, res: express.Response, ctrl: IController, met: "GET" | "POST" | "PUT" | "DELETE")
+    private handleRequest(req: express.Request, res: express.Response, ctrl: IController, met: "GET" | "POST" | "PUT" | "DELETE", data: any)
     {
-        ctrl.takeControl(req, met).then(function(result: string | number){
+        let ref: Server = this;
+        ctrl.takeControl(req, met, data).then(function(result: string | number | Transition){
             let addr: string | undefined = req.header("x-forwarded.for");
             if (typeof addr === "undefined")
             {
@@ -122,6 +143,14 @@ export default class Server
                 }
                 res.setHeader("Content-Type", "text/html");
                 res.send(result);
+            }
+            else if (result instanceof Transition)
+            {
+                let target: IController | null = ref.getController(result.getPath());
+                if (target != null)
+                {
+                    ref.handleRequest(result.getRequest(), res, target, result.getMethod(), result.getData());
+                }
             }
             else
             {
@@ -147,5 +176,18 @@ export default class Server
                 console.info("Server started (port: " + this.port +")");
             }
         });
+    }
+}
+
+/**
+ * Declaration of module which enables work with session
+ */
+declare module "express-session"{
+
+    /**
+     * Interface holding all possible values which can be stored in session
+     */
+    interface SessionData{
+        
     }
 }

@@ -23,8 +23,17 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-header{
-    height: 148px;
+body{
+    display: flex;
+    flex-flow: column;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+header
+{
+    flex: 0 1 auto;
 }
 
 h1{
@@ -90,10 +99,8 @@ main{
     background-image: url("../images/1.jpg");
     background-repeat: no-repeat;
     background-size: cover;
-    width: calc(100vw - 20px);
-    height: calc(100vh - 168px);
     padding: 10px;
-    overflow: hidden;
+    flex: 1 1 auto;
 }
 
 
@@ -102,3 +109,16 @@ main{
 }
 
 
+.message{
+    background: linear-gradient(180deg,#fff,#ddd);
+    border: 1px solid rgba(0,0,0,.4);
+    border-radius: 3px;
+    box-shadow: 5px 5px 3px -3px rgba(0,0,0,.4);
+    padding: 5px;
+    font-size: 75%;
+    text-align: left;
+}
+
+.message.error{
+    background: linear-gradient(180deg,#ffdbdb,#d88a8a);
+}

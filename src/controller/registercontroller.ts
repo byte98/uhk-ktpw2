@@ -20,23 +20,49 @@ import IController from "./icontroller";
 import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
-import UserModel, { IUser } from "../model/user";
+import UserModel, { IUser, User } from "../model/user";
+import Transition from "./transition";
 
 /**
  * Class which controls behaviour of register page
  */
 export default class RegisterController implements IController
 {
-    async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE"): Promise<string | number> {
-        let reti: string | number = 405;
+    async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE", data: any): Promise<string | number | Transition> {
+        let reti: string | number | Transition = 405;
         if (method === "GET")
         {
             reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "register.ejs"), "utf-8"));
         }
         else if (method == "POST")
         {
-            reti = 200;
-            
+            let user: IUser | null = await UserModel.getByEmail(req.body.mail);
+            if (user == null)
+            {
+                user = await UserModel.getByUsername(req.body.username);
+            }
+            if (user == null)
+            {
+                if (req.body.password != req.body.passworda)
+                {
+                    reti = new Transition("/", req, "GET", {"error": "Chyba registrace - zadaná hesla neodpovídají!"});
+                }
+                else
+                {
+                    UserModel.create(
+                        req.body.name,
+                        req.body.surname,
+                        req.body.username,
+                        req.body.mail,
+                        req.body.password
+                    );
+                    reti = new Transition("/", req, "GET", {"message": "Uživatel byl úspěšně zaregistrován. Nyní se lze přihlásit."});
+                }
+            }
+            else
+            {
+                reti = new Transition("/", req, "GET", {"error": "Chyba registrace - na zadaný e-mail či uživatelské jméno již existuje uživatel!"});
+            }
         }
         return reti;
     }

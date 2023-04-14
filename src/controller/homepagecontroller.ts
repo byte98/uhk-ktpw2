@@ -20,18 +20,31 @@ import IController from "./icontroller";
 import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
+import Transition from "./transition";
 
 /**
  * Class which can handle behaviour of home page
  */
 export default class HomePageController implements IController
 {
-    async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE"): Promise<string | number>
+    async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE", data: any): Promise<string | number | Transition>
     {
-        let reti: string | number = 405;
-        if (method === "GET")
+        let reti: string | number | URL = 405;
+        if (method == "GET")
         {
-            reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "homepage.ejs"), "utf-8"));
+            let tempData: ejs.Data = new class implements ejs.Data{};
+            if (data != null)
+            {
+                if (typeof data.message != "undefined")
+                {
+                    tempData["msg"] = data.msg;
+                }
+                if (typeof data.error != "undefined")
+                {
+                    tempData["errMsg"] = data.error;
+                }
+            }
+            reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "homepage.ejs"), "utf-8"), tempData);
         }
         return reti;
     }

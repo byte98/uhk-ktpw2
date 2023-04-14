@@ -47,4 +47,9 @@ export default class Configuration
      */
     public static readonly db: string = "mongodb://127.0.0.1:27017/calendar";
 
+    /**
+     * Secret used when operating over sessions
+     */
+    public static readonly sessionSecret: string = "MySuperSessionSecret";
+
 }

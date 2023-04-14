@@ -43,9 +43,16 @@
         </nav>
     </header>
     <main>
-        <aside class="">
-            
+        <% if (typeof errMsg !== "undefined"){ %>
+        <aside class="message error">
+                <%= errMsg %>
         </aside>
+        <% } %>
+        <% if (typeof msg !== "undefined"){ %>
+        <aside class="message">
+                <%= msg %>
+        </aside>
+        <% } %>
         <section>
             <h2>Vítejte</h2>
             <p>Pro pokračování se, prosím, přihlašte nebo registrujte.</p>

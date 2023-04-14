@@ -82,7 +82,7 @@ button.arrow-button > i::before
    display: inline-block;
    width: 32px;
    height: 32px;
-   margin-top: -4px;
+   margin-top: -8px;
 }
 
 button.arrow-button > i.right::before
