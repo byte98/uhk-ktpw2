@@ -40,7 +40,7 @@ export default class Configuration
     /**
      * Port on which will server run
      */
-    public static readonly port: number = 8088;
+    public static readonly port: string = process.env.PORT || "8080";
 
     /**
      * Connection string to database

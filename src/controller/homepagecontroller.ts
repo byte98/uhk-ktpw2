@@ -29,15 +29,16 @@ export default class HomePageController implements IController
 {
     async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE", data: any): Promise<string | number | Transition>
     {
-        let reti: string | number | URL = 405;
+        let reti: string | number | Transition = 405;
         if (method == "GET")
         {
+            console.log(data);
             let tempData: ejs.Data = new class implements ejs.Data{};
             if (data != null)
             {
                 if (typeof data.message != "undefined")
                 {
-                    tempData["msg"] = data.msg;
+                    tempData["msg"] = data.message;
                 }
                 if (typeof data.error != "undefined")
                 {

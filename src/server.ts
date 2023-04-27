@@ -32,7 +32,7 @@ export default class Server
     /**
      * Port on which server listens
      */
-    private readonly port: number;
+    private readonly port: string;
 
     /**
      * Reference to instance of express web server
@@ -49,7 +49,7 @@ export default class Server
      * @param port Port on which will server listen on
      * @param routes Routes connecting path to correct controller
      */
-    public constructor(port: number, routes: Array<{path: string, controller: IController}>)
+    public constructor(port: string, routes: Array<{path: string, controller: IController}>)
     {
         this.port = port;
         this.routes = routes;
@@ -170,7 +170,7 @@ export default class Server
     public start(): void
     {
         this.init();
-        this.app.listen(this.port, () => {
+        this.app.listen(Number(this.port), () => {
             if (Configuration.debug)
             {
                 console.info("Server started (port: " + this.port +")");

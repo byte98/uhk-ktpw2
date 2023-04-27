@@ -114,7 +114,7 @@ main{
     border: 1px solid rgba(0,0,0,.4);
     border-radius: 3px;
     box-shadow: 5px 5px 3px -3px rgba(0,0,0,.4);
-    padding: 5px;
+    padding: 10px;
     font-size: 75%;
     text-align: left;
 }
