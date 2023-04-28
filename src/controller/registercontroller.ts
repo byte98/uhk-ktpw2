@@ -21,31 +21,41 @@ import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
 import UserModel, { IUser, User } from "../model/user";
-import Transition from "./transition";
+import Redirect from "../utils/redirect";
 
 /**
  * Class which controls behaviour of register page
  */
 export default class RegisterController implements IController
 {
-    async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE", data: any): Promise<string | number | Transition> {
-        let reti: string | number | Transition = 405;
+    async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE", data: any): Promise<string | number | Redirect> {
+        let reti: string | number | Redirect = 405;
+        let templateData: ejs.Data = new class implements ejs.Data{};
         if (method === "GET")
         {
             reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "register.ejs"), "utf-8"));
         }
         else if (method == "POST")
         {
-            let user: IUser | null = await UserModel.getByEmail(req.body.mail);
+            templateData.name = req.body.name;
+            templateData.surname = req.body.surname;
+            templateData.username = req.body.username;
+            templateData.email = req.body.email;
+            let user: IUser | null = await UserModel.getByEmail(req.body.email);
             if (user == null)
             {
                 user = await UserModel.getByUsername(req.body.username);
+            }
+            else
+            {
+                templateData.email = undefined;
             }
             if (user == null)
             {
                 if (req.body.password != req.body.passworda)
                 {
-                    reti = new Transition("/", req, "GET", {"error": "Chyba registrace - zadaná hesla neodpovídají!"});
+                    templateData.error = "Chyba registrace - zadaná hesla neodpovídají!";
+                    reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "register.ejs"), "utf-8"), templateData);
                 }
                 else
                 {
@@ -53,15 +63,18 @@ export default class RegisterController implements IController
                         req.body.name,
                         req.body.surname,
                         req.body.username,
-                        req.body.mail,
+                        req.body.email,
                         req.body.password
                     );
-                    reti = new Transition("/", req, "GET", {"message": "Uživatel byl úspěšně zaregistrován. Nyní se lze přihlásit."});
+                    reti = new Redirect("/login");
+                    reti.setMessage("INFO", "Uživatel byl úspěšně zaregistrován. Nyní se lze přihlásit.");
                 }
             }
             else
             {
-                reti = new Transition("/", req, "GET", {"error": "Chyba registrace - na zadaný e-mail či uživatelské jméno již existuje uživatel!"});
+                templateData.username = undefined;
+                templateData.error = "Chyba registrace - na zadaný e-mail či uživatelské jméno již existuje uživatel!";
+                reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "register.ejs"), "utf-8"), templateData);
             }
         }
         return reti;

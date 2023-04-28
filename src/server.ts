@@ -20,9 +20,11 @@ import session from 'express-session';
 import body_parser from 'body-parser';
 import http from 'http';
 import path from 'path';
+import flash from "connect-flash";
 import IController from './controller/icontroller';
 import Configuration from './configuration';
-import Transition from './controller/transition';
+import Redirect from './utils/redirect';
+
 
 /**
  * Class which represents server which can respond to all requests
@@ -69,6 +71,7 @@ export default class Server
             saveUninitialized: false,
             secret: Configuration.sessionSecret
         }));
+        this.app.use(flash());
         this.initRoutes();
     }
 
@@ -127,7 +130,7 @@ export default class Server
     private handleRequest(req: express.Request, res: express.Response, ctrl: IController, met: "GET" | "POST" | "PUT" | "DELETE", data: any)
     {
         let ref: Server = this;
-        ctrl.takeControl(req, met, data).then(function(result: string | number | Transition){
+        ctrl.takeControl(req, met, data).then(function(result: string | number | Redirect){
             let addr: string | undefined = req.header("x-forwarded.for");
             if (typeof addr === "undefined")
             {
@@ -144,13 +147,24 @@ export default class Server
                 res.setHeader("Content-Type", "text/html");
                 res.send(result);
             }
-            else if (result instanceof Transition)
+            else if (result instanceof Redirect)
             {
-                let target: IController | null = ref.getController(result.getPath());
-                if (target != null)
+                debugMsg += "REDIRECT " + result.getTarget() + " (" + result.getStatus() + ": " + http.STATUS_CODES[result.getStatus()] + ")";
+                if (Configuration.debug)
                 {
-                    ref.handleRequest(result.getRequest(), res, target, result.getMethod(), result.getData());
+                    console.log(debugMsg);
                 }
+                let infoMessage: string | null = result.getMessage("INFO");
+                let errMessage: string | null = result.getMessage("ERROR");
+                if (infoMessage != null)
+                {
+                    req.flash('info', infoMessage);
+                }
+                if (errMessage != null)
+                {
+                    req.flash('error', errMessage);
+                }
+                res.redirect(result.getStatus(), result.getTarget());
             }
             else
             {

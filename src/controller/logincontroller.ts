@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Jiri Skoda <skodaji1@uhk.cz>
+// Copyright (C) 2023 Jiri Skoda <developer@skodaj.cz>
 // 
 // This file is part of b22l-skodaji1-ktpw2-semestral-project.
 // 
@@ -16,36 +16,30 @@
 // along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Request } from "express";
+import { ParamsDictionary } from "express-serve-static-core";
+import { ParsedQs } from "qs";
 import IController from "./icontroller";
+import Redirect from "../utils/redirect";
 import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
-import Transition from "./transition";
 
 /**
- * Class which can handle behaviour of home page
+ * Class which represents controller of login page
  */
-export default class HomePageController implements IController
+export default class LoginController implements IController
 {
-    async takeControl(req: Request, method: "GET" | "POST" | "PUT" | "DELETE", data: any): Promise<string | number | Transition>
-    {
-        let reti: string | number | Transition = 405;
+    async takeControl(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, method: "GET" | "POST" | "PUT" | "DELETE", data: any): Promise<string | number | Redirect> {
+        let reti: string | number | Redirect = 405;
         if (method == "GET")
         {
-            console.log(data);
-            let tempData: ejs.Data = new class implements ejs.Data{};
-            if (data != null)
+            let templateData: ejs.Data = new class implements ejs.Data{};
+            let info: string[] = req.flash("info");
+            if (info.length > 0)
             {
-                if (typeof data.message != "undefined")
-                {
-                    tempData["msg"] = data.message;
-                }
-                if (typeof data.error != "undefined")
-                {
-                    tempData["errMsg"] = data.error;
-                }
+                templateData["info"] = info[0];
             }
-            reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "homepage.ejs"), "utf-8"), tempData);
+            reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "login.ejs"), "utf-8"), templateData);
         }
         return reti;
     }

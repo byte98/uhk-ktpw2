@@ -15,9 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
 
-import HomePageController from "./controller/homepagecontroller";
 import IController from "./controller/icontroller";
+import LoginController from "./controller/logincontroller";
 import RegisterController from "./controller/registercontroller";
+import RootController from "./controller/rootcontroller";
 
 /**
  * Class which holds whole configuration of server
@@ -33,7 +34,8 @@ export default class Configuration
      * Definition of correct controller for each path
      */
     public static readonly routes: Array<{path: string, controller: IController}> =  [
-        {path: "/", controller: new HomePageController()},
+        {path: "/", controller: new RootController()},
+        {path: "/login", controller: new LoginController()},
         {path: "/register", controller: new RegisterController()}
     ];
 
