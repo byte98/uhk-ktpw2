@@ -23,6 +23,8 @@ import Redirect from "../utils/redirect";
 import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
+import UserModel, { IUser } from "../model/user";
+import {createHash} from "crypto";
 
 /**
  * Class which represents controller of login page
@@ -31,15 +33,43 @@ export default class LoginController implements IController
 {
     async takeControl(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, method: "GET" | "POST" | "PUT" | "DELETE", data: any): Promise<string | number | Redirect> {
         let reti: string | number | Redirect = 405;
+        let templateData: ejs.Data = new class implements ejs.Data{};
         if (method == "GET")
         {
-            let templateData: ejs.Data = new class implements ejs.Data{};
             let info: string[] = req.flash("info");
             if (info.length > 0)
             {
-                templateData["info"] = info[0];
+                templateData.info = info[0];
+            }
+            let error: string[] = req.flash("error");
+            if (error.length > 0)
+            {
+                templateData.error = error[0];
             }
             reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "login.ejs"), "utf-8"), templateData);
+        }
+        else if (method == "POST")
+        {
+            let user: IUser | null = await UserModel.getByUsername(req.body.username);
+            let password: string = createHash("sha512").update(req.body.password).digest("hex").toString();
+            let loggedIn: boolean = false;
+            if (user != null)
+            {
+                if (user.password == password)
+                {
+                    loggedIn = true;
+                }
+            }
+            if (loggedIn == false)
+            {
+                templateData.error = "Chyba přihlášení - na zadané uživatelské jméno nebo heslo nebyl nalezen žádný uživatel!";
+                reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "login.ejs"), "utf-8"), templateData);
+            }
+            else
+            {
+                req.session.user = user;
+                reti = new Redirect("/my/today", 200);
+            }
         }
         return reti;
     }

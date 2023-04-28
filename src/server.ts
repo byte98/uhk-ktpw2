@@ -24,6 +24,7 @@ import flash from "connect-flash";
 import IController from './controller/icontroller';
 import Configuration from './configuration';
 import Redirect from './utils/redirect';
+import { IUser } from './model/user';
 
 
 /**
@@ -202,6 +203,9 @@ declare module "express-session"{
      * Interface holding all possible values which can be stored in session
      */
     interface SessionData{
-        
+        /**
+         * Actually logged user
+         */
+        user: IUser | null
     }
 }
