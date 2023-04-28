@@ -17,6 +17,8 @@
 
 import IController from "./controller/icontroller";
 import LoginController from "./controller/logincontroller";
+import LogoutController from "./controller/logoutcontroller";
+import MyController from "./controller/mycontroller";
 import RegisterController from "./controller/registercontroller";
 import RootController from "./controller/rootcontroller";
 
@@ -36,7 +38,10 @@ export default class Configuration
     public static readonly routes: Array<{path: string, controller: IController}> =  [
         {path: "/", controller: new RootController()},
         {path: "/login", controller: new LoginController()},
-        {path: "/register", controller: new RegisterController()}
+        {path: "/register", controller: new RegisterController()},
+        {path: "/my", controller: new MyController()},
+        {path: "/my/:year-:month-:day", controller: new MyController()},
+        {path: "/logout", controller: new LogoutController()}
     ];
 
     /**

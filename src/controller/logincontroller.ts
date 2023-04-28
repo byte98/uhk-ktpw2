@@ -36,17 +36,29 @@ export default class LoginController implements IController
         let templateData: ejs.Data = new class implements ejs.Data{};
         if (method == "GET")
         {
-            let info: string[] = req.flash("info");
-            if (info.length > 0)
+            let user: IUser | null | undefined = req.session.user;
+            if (typeof(user) != "undefined" && user != null)
             {
-                templateData.info = info[0];
+                let today: Date = new Date();
+                let year: string = today.getFullYear().toString();
+                let month: string = ((today.getMonth() + 1) < 10) ? "0" + (today.getMonth() + 1).toString() : today.getMonth().toString();
+                let day: string = ((today.getDate() + 1) < 10) ? "0" + (today.getDate() + 1).toString() : today.getDate().toString();
+                reti = new Redirect("/my/" + year  +"-" + month + "-" + day);
             }
-            let error: string[] = req.flash("error");
-            if (error.length > 0)
+            else
             {
-                templateData.error = error[0];
+                let info: string[] = req.flash("info");
+                if (info.length > 0)
+                {
+                    templateData.info = info[0];
+                }
+                let error: string[] = req.flash("error");
+                if (error.length > 0)
+                {
+                    templateData.error = error[0];
+                }
+                reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "login.ejs"), "utf-8"), templateData);
             }
-            reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "login.ejs"), "utf-8"), templateData);
         }
         else if (method == "POST")
         {
@@ -67,8 +79,12 @@ export default class LoginController implements IController
             }
             else
             {
+                let today: Date = new Date();
+                let year: string = today.getFullYear().toString();
+                let month: string = ((today.getMonth() + 1) < 10) ? "0" + (today.getMonth() + 1).toString() : today.getMonth().toString();
+                let day: string = ((today.getDate() + 1) < 10) ? "0" + (today.getDate() + 1).toString() : today.getDate().toString();
                 req.session.user = user;
-                reti = new Redirect("/my/today", 200);
+                reti = new Redirect("/my/" + year  +"-" + month + "-" + day);
             }
         }
         return reti;

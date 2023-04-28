@@ -1,0 +1,40 @@
+/**
+ * Copyright (C) 2023 Jiri Skoda <developer@skodaj.cz>
+ * 
+ * This file is part of b22l-skodaji1-ktpw2-semestral-project.
+ * 
+ * b22l-skodaji1-ktpw2-semestral-project is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * b22l-skodaji1-ktpw2-semestral-project is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+h2 > span:nth-child(1){
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+h2 > span:nth-child(2){
+    display: inline-block;
+    margin-left: 1rem;
+    float: right;
+}
+
+h2 form{
+    display: inline-block;
+} 
+
+h1 > span{
+    display: flex;
+    float: right;
+    flex-direction: column;
+    font-size: 0.5em;
+}
