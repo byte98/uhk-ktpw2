@@ -30,7 +30,7 @@ export default class LogoutController implements IController
 {
     async takeControl(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, method: "GET" | "POST" | "PUT" | "DELETE", data: any): Promise<string | number | Redirect> {
         let reti: string | number | Redirect = 405;
-        if (method == "GET")
+        if (method == "POST")
         {
             let user: IUser | null | undefined = req.session.user;
             if (typeof (user) != "undefined" && user != null)

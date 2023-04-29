@@ -42,12 +42,17 @@ export interface IUser{
     /**
      * E-mail of user
      */
-    email: string,
+    email: string;
 
     /**
      * Hash of password of user
      */
-    password: string
+    password: string;
+
+    /**
+     * Identifier of user
+     */
+    ident: string;
 
 }
 
@@ -93,6 +98,7 @@ export default class UserModel{
                 username: string = result.username;
                 email: string = result.email;
                 password: string = result.password;
+                ident: string = result._id.toString()
             };
         }
         return reti;
@@ -118,7 +124,33 @@ export default class UserModel{
                 username: string = result.username;
                 email: string = result.email;
                 password: string = result.password;
+                ident: string = result._id.toString();
+            };
+        }
+        return reti;
+    }
 
+    /**
+     * Gets user by its identifier
+     * @param id Identifier of user
+     * @returns User with searched identifier or NULL, if there is no such user
+     */
+    public static async getById(id: string): Promise<IUser | null>
+    {
+        let reti: IUser | null = null;
+        let connection: typeof mongoose;
+        connection =  await mongoose.connect(Configuration.db);
+        let query :mongoose.Query<any | null, {}, {}, IUser> =  User.findById(id);
+        let result: any | null = await query.exec();
+        if (result != null)
+        {
+            reti = new class implements IUser{
+                name: string = result.name;
+                surname: string = result.surname;
+                username: string = result.username;
+                email: string = result.email;
+                password: string = result.password;
+                ident: string = result._id.toString();
             };
         }
         return reti;

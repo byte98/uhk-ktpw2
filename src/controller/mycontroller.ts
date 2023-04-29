@@ -24,6 +24,7 @@ import { IUser } from "../model/user";
 import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
+import DateUtils from "../utils/dateutils";
 
 /**
  * Class which controls my calendar page
@@ -33,78 +34,99 @@ export default class MyController implements IController{
         let reti: string | number | Redirect = 405;
         let user: IUser | null | undefined = req.session.user;
         let templateData: ejs.Data = new class implements ejs.Data{};
-        if (typeof (user) != "undefined" && user != null)
+        let info: string[] = req.flash("info");
+        if (info.length > 0)
         {
-            // User is logged in
-            templateData.username = user.name + " " + user.surname + " (" + user.username + ")"
-
-            // Date validation (at the end, if not valid date is entered, today date will be used)
-            let today: Date = new Date();
-            let date: Date = today;
-            if (typeof(req.params.year) != "undefined" && typeof(req.params.month) != "undefined" && typeof(req.params.day) != null)
-            {
-                let yearStr: string = req.params.year;
-                let monthStr: string = req.params.month;
-                let dayStr: string = req.params.day;
-                if (monthStr.length < 2) monthStr = '0' + monthStr;
-                if (dayStr.length < 2) dayStr = '0' + dayStr;
-                let day: number = (isNaN(Number(dayStr))) ? today.getDate() : Number(dayStr);
-                let month: number = (isNaN(Number(monthStr))) ? today.getMonth() :Number(monthStr) - 1;
-                let year: number = (isNaN(Number(yearStr))) ? today.getFullYear(): Number(yearStr);
-                date = new Date(year, month, day);
-                if (isNaN(Number(date)))
-                {
-                    date = today;
-                }
-            }
-            const options: Intl.DateTimeFormatOptions = {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            };
-
-            let dayBefore   = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
-            let dayAfter    = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
-            let monthBefore = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate());
-            let monthAfter  = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()); 
-            // const dayBefore: Date = new Date(date.valueOf()); dayBefore.setDate(date.getDate() + 1);
-            // const dayAfter: Date = new Date(date.valueOf()); dayBefore.setDate(date.getDate() - 1);
-            // const monthBefore: Date = new Date(date.valueOf()); dayBefore.setMonth(date.getMonth() - 1);
-            // const monthAfter: Date = new Date(date.valueOf()); dayBefore.setMonth(date.getMonth() + 1);
-
-            templateData.date = date.toLocaleDateString("cs-CZ", options);
-            templateData.dayBefore = "/my/" + this.formatDate(dayBefore);
-            templateData.dayAfter = "/my/" + this.formatDate(dayAfter);
-            templateData.monthBefore = "/my/" + this.formatDate(monthBefore);
-            templateData.monthAfter = "/my/" + this.formatDate(monthAfter);
-            reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "my.ejs"), "utf-8"), templateData);
+            templateData.info = info[0];
         }
-        else
+        let error: string[] = req.flash("error");
+        if (error.length > 0)
         {
-            // User is not logged in
-            reti = new Redirect("/login");
-            reti.setMessage("ERROR", "Pro pokračování se, prosím, přihlašte.");
+            templateData.error = error[0];
+        }
+        if (method == "GET")
+        {
+            if (typeof (user) != "undefined" && user != null)
+            {
+                // User is logged in
+                templateData.username = user.name + " " + user.surname + " (" + user.username + ")"
+
+                let date = DateUtils.getValid(req.params.year, req.params.month, req.params.day);
+                let today = new Date();
+
+                const options: Intl.DateTimeFormatOptions = {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                };
+
+                const calendarDateOptions: Intl.DateTimeFormatOptions = {
+                    month: "long",
+                    year: "numeric"
+                }
+
+                let dayBefore   = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
+                let dayAfter    = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+                let monthBefore = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate());
+                let monthAfter  = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()); 
+
+                templateData.date = date.toLocaleDateString("cs-CZ", options);
+                templateData.dayBefore = "/my/" + DateUtils.formatDate(dayBefore);
+                templateData.dayAfter = "/my/" + DateUtils.formatDate(dayAfter);
+                templateData.monthBefore = "/my/" + DateUtils.formatDate(monthBefore);
+                templateData.monthAfter = "/my/" + DateUtils.formatDate(monthAfter);
+                templateData.calendar = this.generateCalendar(date);
+                templateData.calendarDate = date.toLocaleDateString("cs-CZ", calendarDateOptions);
+                templateData.showToday = false;
+                templateData.newEventLink = "/my/event/" + DateUtils.formatDate(date);
+                if (date.getDate() != today.getDate() || date.getMonth() != today.getMonth() || date.getFullYear() != today.getFullYear())
+                {
+                    templateData.showToday = true;
+                    templateData.todayLink = "/my/" + DateUtils.formatDate(today);
+                }
+                reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "my.ejs"), "utf-8"), templateData);
+            }
+            else
+            {
+                // User is not logged in
+                reti = new Redirect("/login");
+                reti.setMessage("ERROR", "Pro pokračování se, prosím, přihlašte.");
+            }
         }
         return reti;
     }
 
-    /**
-     * Formats date to string usable in links
-     * @param date Date which will be formatted into string
-     * @returns String containing date in format usable in links
-     */
-    private formatDate(date: Date): string{
-        let dayStr: string = date.getDate().toString();
-        if (dayStr.length < 2) dayStr = '0' + dayStr;
-        let monthStr: string = (date.getMonth() + 1).toString();
-        if (dayStr.length < 2) monthStr + '0' + monthStr;
-        let yearStr: string = date.getFullYear().toString();
-        while (yearStr.length < 2)
-        {
-            yearStr = '0' + yearStr;
-        }
-        return yearStr + "-" + monthStr + "-" + dayStr;
-    }
 
+    /**
+     * Generates HTML table with calendar for defined month
+     * @param date Date for which will be month calendar generated
+     * @returns HTML table with calendar for defined month
+     */
+    private generateCalendar(date: Date): string {
+        const currentMonth: Date = new Date(date.getFullYear(), date.getMonth(), 1);
+      
+        let reti: string = "<table>";      
+        reti += "<thead><tr>";
+        reti += "<th>Po</th><th>Út</th><th>St</th><th>Čt</th><th>Pá</th><th>So</th><th>Ne</th>";
+        reti += "</tr></thead>";
+      
+        reti += "<tbody>";
+        while (currentMonth.getMonth() === date.getMonth()) {
+          reti += "<tr>";
+          for (let i: number = 1; i <= 7; i++) {
+            if (currentMonth.getDay() === i % 7 && currentMonth.getFullYear() === date.getFullYear() && currentMonth.getMonth() === date.getMonth()) {
+              reti += `<td` + (currentMonth.getDate() === date.getDate() ? ` class="actual"` : ``) + `><a href="/my/` + DateUtils.formatDate(currentMonth) + `"><span>${currentMonth.getDate()}</span></a></td>`;
+              currentMonth.setDate(currentMonth.getDate() + 1);
+            } else {
+              reti += "<td></td>";
+            }
+          }
+          reti += "</tr>";
+        }
+        reti += "</tbody></table>";
+      
+        return reti;
+      }
+      
 }

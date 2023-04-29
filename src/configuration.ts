@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
 
+import EventController from "./controller/eventcontroller";
 import IController from "./controller/icontroller";
 import LoginController from "./controller/logincontroller";
 import LogoutController from "./controller/logoutcontroller";
@@ -41,7 +42,9 @@ export default class Configuration
         {path: "/register", controller: new RegisterController()},
         {path: "/my", controller: new MyController()},
         {path: "/my/:year-:month-:day", controller: new MyController()},
-        {path: "/logout", controller: new LogoutController()}
+        {path: "/logout", controller: new LogoutController()},
+        {path: "/my/event", controller: new EventController()},
+        {path: "/my/event/:year-:month-:day", controller: new EventController()}
     ];
 
     /**

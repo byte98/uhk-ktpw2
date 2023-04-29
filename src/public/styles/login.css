@@ -17,38 +17,8 @@
  * along with b22l-skodaji1-ktpw2-semestral-project.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-form label, form a{
-    display: block;
-    margin-bottom: 10px;
-    margin-top: 10px;
+
+
+ form button{
+    width: 25%;
 }
-
-form input, form a{
-    width: 50%;
-}
-
-
-.message{
-    padding: 10px;
-    background-color: var(--background);
-    border-left: 0.5rem solid var(--text-main);
-    width: calc(100% - 20px);
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-}
-
-.message.info{
-    background-color: var(--message-info);
-    border-left: 0.5rem solid var(--message-info-border);
-}
-
-.message.error{
-    background-color: var(--message-error);
-    border-left: 0.5rem solid var(--message-error-border);
-}
-
-form#logout, form#logout a{
-    display: inline;
-}
-

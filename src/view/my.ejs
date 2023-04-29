@@ -37,7 +37,9 @@
             Kalendář
             <span>
                 <span><%= username %></span>
-                <a href="/logout">Odhlásit se</a>
+                <form action="/logout" method="POST" id="logout">
+                    <a href="#">Odhlásit se</a>
+                </form>
             </span>
         </h1>
         <hr>
@@ -48,26 +50,46 @@
                 <span>
                     <form action="<%= monthBefore %>" method="GET">
                         <button type="submit">&laquo;</button>
-                    </form><!--
-                    --><form action="<%= dayBefore %>" method="GET">
+                    </form>
+                    <form action="<%= dayBefore %>" method="GET">
                         <button type="submit">&lsaquo;</button>
                     </form>
                 </span>
                 <%= date %>
                 <span>
+                    <% if (showToday){ %>
+                    <form action="<%= todayLink %>" method="GET">
+                        <button type="submit">Dnes</button>
+                    </form>
+                    <% } %>
                     <form action="<%= dayAfter %>" method="GET">
                         <button type="submit">&rsaquo;</button>
-                    </form><!--
-                    --><form action="<%= monthAfter %>" method="GET">
+                    </form>
+                    <form action="<%= monthAfter %>" method="GET">
                         <button type="submit">&raquo;</button>
                     </form>
                 </span>
+            </h2>
             <% if (typeof(error) != "undefined") {%>
             <aside class="message error">
                 <%= error %>
             </aside>
             <% } %>
+            <% if (typeof(info) != "undefined") {%>
+                <aside class="message info">
+                    <%= info %>
+                </aside>
+            <% } %>
+            <form method="GET" action="<%=newEventLink%>">
+                <button type="submit">Nová událost</button>
+            </form>
+        </section>
+        <section>
+            <h2><%= calendarDate %></h2>
+            <%- calendar %>
         </section>
     </main>
+    <script src="/scripts/jquery-3.6.4.min.js"></script>
+    <script src="/scripts/logout.js"></script>
 </body> 
 </html>

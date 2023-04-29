@@ -43,7 +43,7 @@
                 <%= error %>
             </aside>
             <% } %>
-            <form method="POST" action="./register">
+            <form method="POST" action="./register?_method=PUT">
                 <label>
                     Jméno
                     <input type="text" name="name" required <% if (typeof(name) != "undefined" && name != undefined){%> value="<%= name %>" <%} %>>

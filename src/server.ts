@@ -25,6 +25,7 @@ import IController from './controller/icontroller';
 import Configuration from './configuration';
 import Redirect from './utils/redirect';
 import { IUser } from './model/user';
+import methodOverride from 'method-override';
 
 
 /**
@@ -73,6 +74,7 @@ export default class Server
             secret: Configuration.sessionSecret
         }));
         this.app.use(flash());
+        this.app.use(methodOverride("_method"));
         this.initRoutes();
     }
 

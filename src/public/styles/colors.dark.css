@@ -22,4 +22,12 @@
     --message-info-border: #0066c0;
     --message-error: #4a1d1d;
     --message-error-border: #9c0202;
+    --color-red: #5a0000;
+    --color-yellow: #514800;
+    --color-blue: #003a44;
+    --color-green: #1c3100;
+    --color-border-red: #b30000;
+    --color-border-yellow: #887801;
+    --color-border-blue: #02839a;
+    --color-border-green: #518f01;
  }

@@ -20,7 +20,3 @@
  form input, form a{
     width: 100%;
 }
-
-form button{
-    width: calc(50% - 10px);
-}

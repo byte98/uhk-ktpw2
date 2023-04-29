@@ -35,7 +35,7 @@ export default class RegisterController implements IController
         {
             reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "register.ejs"), "utf-8"));
         }
-        else if (method == "POST")
+        else if (method == "PUT")
         {
             templateData.name = req.body.name;
             templateData.surname = req.body.surname;
