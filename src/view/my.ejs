@@ -83,6 +83,9 @@
             <form method="GET" action="<%=newEventLink%>">
                 <button type="submit">Nová událost</button>
             </form>
+            <% if(hasEvents == false) {%>
+                <p>Na tento den nejsou plánovány žádné události.</p>
+            <% } %>
         </section>
         <section>
             <h2><%= calendarDate %></h2>

@@ -35,14 +35,9 @@ export interface IEvent
     description: string;
 
     /**
-     * Start of the event
+     * Date of the event
      */
-    start: Date;
-
-    /**
-     * End of the event
-     */
-    end: Date;
+    date: Date;
 
     /**
      * Color of event
@@ -68,8 +63,7 @@ const eventSchema = new Schema<IEvent>({
     description: {type: String, required: true},
     color: {type: String, required: true},
     user: {type: String, required: true},
-    start: {type: Date, required: true},
-    end: {type: Date, required: true}
+    date: {type: Date, required: true},
 });
 
 /**
@@ -87,12 +81,11 @@ export default class EventModel{
      * @param name Name of event
      * @param description Description event
      * @param color Color of event
-     * @param start Start of event
-     * @param end End of event
+     * @param date Date of event
      * @param user Author of event
      */
     public static async create(
-        name: string, description: string, color: "RED" | "YELLOW" | "GREEN" | "BLUE" | "NONE", start: Date, end: Date, user: IUser
+        name: string, description: string, color: "RED" | "YELLOW" | "GREEN" | "BLUE" | "NONE", date: Date, user: IUser
     )
     {
         await mongoose.connect(Configuration.db);
@@ -100,10 +93,35 @@ export default class EventModel{
             name: name,
             description: description,
             color: color,
-            start: start,
-            end: end,
+            date: date,
             user: user.ident
         });
         await event.save();
+    }
+
+    /**
+     * Gets all users events for specified date
+     * @param user User which events will be returned
+     * @param date Date of events
+     * @returns Array with all users events for specified date
+     */
+    public static async get(user: IUser, date: Date): Promise<Array<IEvent>>
+    {
+        let reti: Array<IEvent> = new Array();
+        let connection: typeof mongoose;
+        connection =  await mongoose.connect(Configuration.db);
+        let query :mongoose.Query<any | null, {}, {}, IEvent> =  Event.find({user: user.ident}).sort("start");
+        let result: Array<IEvent> | null = await query.exec();
+        if (result != null && result.length > 0)
+        {
+            for (let i: number = 0; i < result.length; i++)
+            {
+                if (result[i].date.getDate() == date.getDate() && result[i].date.getMonth() == date.getMonth() && result[i].date.getFullYear() == date.getFullYear())
+                {
+                    reti.push(result[i]);
+                }
+            }
+        }
+        return reti;
     }
 }

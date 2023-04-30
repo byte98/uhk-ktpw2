@@ -68,34 +68,29 @@
                 </label>
                 <p>Barva</p>
                 <label>
-                    <input type="radio" <% if ((hasData && eventFormColor=="NONE") || hasData == false){ %> checked <% } %> name="color" value="none" required>
+                    <input type="radio" <% if ((hasData && eventFormColor=="NONE") || hasData == false){ %> checked <% } %> name="color" value="NONE" required>
                     <span class="color"></span>Žádná
                 </label>
                 <label>
-                    <input type="radio" <% if (hasData && eventFormColor=="RED"){ %> checked <% } %> name="color" value="yellow" required>
+                    <input type="radio" <% if (hasData && eventFormColor=="RED"){ %> checked <% } %> name="color" value="RED" required>
                     <span class="color red"></span>Červená
                 </label>
                 <label>
-                    <input type="radio" <% if (hasData && eventFormColor=="YELLOW"){ %> checked <% } %> name="color" value="yellow" required>
+                    <input type="radio" <% if (hasData && eventFormColor=="YELLOW"){ %> checked <% } %> name="color" value="YELLOW" required>
                     <span class="color yellow"></span>Žlutá
                 </label>
                 <label>
-                    <input type="radio" <% if (hasData && eventFormColor=="GREEN"){ %> checked <% } %> name="color" value="green" required>
+                    <input type="radio" <% if (hasData && eventFormColor=="GREEN"){ %> checked <% } %> name="color" value="GREEN" required>
                     <span class="color green"></span>Zelená
                 </label>
                 <label>
-                    <input type="radio" <% if (hasData && eventFormColor=="BLUE"){ %> checked <% } %> name="color" value="blue" required>
+                    <input type="radio" <% if (hasData && eventFormColor=="BLUE"){ %> checked <% } %> name="color" value="BLUE" required>
                     <span class="color blue"></span>Modrá
                 </label>
                 <label>
-                    Začátek
-                    <input type="date" value="<%=eventFormDateStart%>" required name="startDate">
-                    <input type="time" value="<%=eventFormTimeStart%>" required name="startTime">
-                </label>
-                <label>
-                    Konec
-                    <input type="date" value="<%=eventFormDateEnd%>" required name="endDate">
-                    <input type="time" value="<%=eventFormTimeEnd%>" required name="endTime">
+                    Datum a čas
+                    <input type="date" value="<%=eventFormDate%>" required name="date">
+                    <input type="time" value="<%=eventFormTime%>" required name="time">
                 </label>
                 <button type="reset">Zpět</button>
                 <button type="submit">Přidat událost</button>

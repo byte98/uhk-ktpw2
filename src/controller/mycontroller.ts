@@ -25,6 +25,7 @@ import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
 import DateUtils from "../utils/dateutils";
+import EventModel, { IEvent } from "../model/event";
 
 /**
  * Class which controls my calendar page
@@ -85,6 +86,10 @@ export default class MyController implements IController{
                     templateData.showToday = true;
                     templateData.todayLink = "/my/" + DateUtils.formatDate(today);
                 }
+
+                templateData.hasEvents = false;
+                let events: Array<IEvent> = await EventModel.get(user, date);
+                console.log(events);
                 reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "my.ejs"), "utf-8"), templateData);
             }
             else
@@ -97,6 +102,17 @@ export default class MyController implements IController{
         return reti;
     }
 
+    /**
+     * Stringifies event into HTML string
+     * @param event Event which will be transformed into string
+     * @returns String containing HTML representation of event
+     */
+    private stringifyEvent(event: IEvent): string
+    {
+        let reti: string = "<span class=\"event " + event.color.toLowerCase() + "\"><span class=\"start\">";
+        
+        return reti;
+    }
 
     /**
      * Generates HTML table with calendar for defined month

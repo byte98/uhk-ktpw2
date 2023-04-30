@@ -66,4 +66,17 @@ export default class DateUtils
         }
         return yearStr + "-" + monthStr + "-" + dayStr;
     }
+
+    /**
+     * Formats time into zero-leading form
+     * @param date Date containing time which will be formatted
+     * @returns String containing formatted time
+     */
+    public static formatTime(date: Date): string{
+        let hStr: string = date.getHours().toString();
+        if (hStr.length < 2) hStr = '0' + hStr;
+        let mStr: string = date.getMinutes().toString();
+        if (mStr.length < 2) mStr = '0' + mStr;
+        return hStr + ":" + mStr;
+    }
 }

@@ -44,17 +44,11 @@ export default class EventController implements IController
             {
                 let date = DateUtils.getValid(req.params.year, req.params.month, req.params.day);
                 let now = new Date();
-                date.setHours(now.getHours());
-                date.setMinutes(now.getMinutes());
-                date.setSeconds(now.getSeconds());
-                let end = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + 1, date.getMinutes() + date.getSeconds());
                 templateData.hasData = false;
                 templateData.eventName = "Nová událost";
                 templateData.backLink = "/my/" + DateUtils.formatDate(date);
-                templateData.eventFormDateStart = DateUtils.formatDate(date);
-                templateData.eventFormTimeStart = ((date.getHours() < 10)? "0": "") + date.getHours().toString() + ":" + ((date.getMinutes() < 10)? "0" : "") + date.getMinutes().toString();
-                templateData.eventFormDateEnd = DateUtils.formatDate(end);
-                templateData.eventFormTimeEnd = ((end.getHours() < 10)? "0": "") + end.getHours().toString() + ":" + ((end.getMinutes() < 10)? "0" : "") + end.getMinutes().toString();
+                templateData.eventFormDate = DateUtils.formatDate(date);
+                templateData.eventFormTime = DateUtils.formatTime(now);
                 if (typeof(req.params.id) != "undefined")
                 {
                     templateData.hasData = true;
@@ -63,41 +57,33 @@ export default class EventController implements IController
             }
             else if (method == "PUT")
             {
+                templateData.eventName = "Nová událost";
                 let correct: boolean = false;
                 templateData.backLink = "/my";
                 let date: Date = new Date();
-                let end : Date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + 1, date.getMinutes(), date.getSeconds());
-                templateData.eventFormDateStart = DateUtils.formatDate(date);
-                templateData.eventFormTimeStart = ((date.getHours() < 10)? "0": "") + date.getHours().toString() + ":" + ((date.getMinutes() < 10)? "0" : "") + date.getMinutes().toString();
-                templateData.eventFormDateEnd = DateUtils.formatDate(end);
-                templateData.eventFormTimeEnd = ((end.getHours() < 10)? "0": "") + end.getHours().toString() + ":" + ((end.getMinutes() < 10)? "0" : "") + end.getMinutes().toString();
+                templateData.eventFormDate = DateUtils.formatDate(date);
+                templateData.eventFormTime = DateUtils.formatTime(date);
                 if (typeof (req.body.name) != "undefined")
                 {
                     templateData.hasData = true;
                     templateData.eventFormName = req.body.name;
                     templateData.eventFormDescription = "";
-                    templateData.eventFormColor = "none";
+                    templateData.eventFormColor = "NONE";
+                    templateData.eventFormId = "/my/event/" + DateUtils.formatDate(date);
                     if (typeof(req.body.description) != "undefined")
                     {
                         templateData.eventFormDescription = req.body.description;
-                        if (typeof(req.body.color) != "undefined" && (req.body.color == "none" || req.body.color == "red" || req.body.color != "yellow" || req.body.color != "green" || req.body.color != "blue"))
+                        if (typeof(req.body.color) != "undefined" && (req.body.color == "NONE" || req.body.color == "RED" || req.body.color == "YELLOW" || req.body.color == "GREEN" || req.body.color == "BLUE"))
                         {
                             templateData.eventFormColor = req.body.color;
-                            if (typeof(req.body.startDate) != "undefined")
+
+                            if (typeof(req.body.date) != "undefined")
                             {
-                                templateData.eventFormDateStart = req.body.startDate;
-                                if (typeof(req.body.startTime) != "undefined")
+                                templateData.eventFormDate = req.body.date;
+                                if (typeof(req.body.time) != "undefined")
                                 {
-                                    templateData.eventFormTimeStart = req.body.startTime;
-                                    if (typeof(req.body.endDate) != "undefined")
-                                    {
-                                        templateData.eventFormDateEnd = req.body.endDate;
-                                        if (typeof(req.body.endTime) != "undefined")
-                                        {
-                                            templateData.eventFormTimeEnd = req.body.endTime;
-                                            correct = true;
-                                        }
-                                    }
+                                    templateData.eventFormTime = req.body.time;
+                                    correct = true;
                                 }
                             }
                         }
@@ -105,15 +91,15 @@ export default class EventController implements IController
                 }
                 if (correct)
                 {
-                    let start: Date = new Date(req.body.startDate + "T" + req.body.startTime + ":00");
-                    let end: Date = new Date(req.body.endDate + "T" + req.body.endTime + ":00");
-                    await EventModel.create(req.body.name, req.body.description, req.body.color.toUpperCase(), start, end, user);
+                    let date: Date = new Date(req.body.date + "T" + req.body.time + ":00");
+                    await EventModel.create(req.body.name, req.body.description, req.body.color.toUpperCase(), date, user);
                     reti = new Redirect("/my");
                     reti.setMessage("INFO", "Událost byla úspěšně vytvořena");
                 }
                 else
                 {
                     templateData.error = "Chyba: Některé údaje jsou neplatné.";
+                    reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "event.ejs"), "utf-8"), templateData);
                 }
             }
         }
