@@ -44,7 +44,8 @@ export default class Configuration
         {path: "/my/:year-:month-:day", controller: new MyController()},
         {path: "/logout", controller: new LogoutController()},
         {path: "/my/event", controller: new EventController()},
-        {path: "/my/event/:year-:month-:day", controller: new EventController()}
+        {path: "/my/event/:year-:month-:day", controller: new EventController()},
+        {path: "/my/event/:id", controller: new EventController()}
     ];
 
     /**

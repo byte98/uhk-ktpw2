@@ -85,6 +85,12 @@
             </form>
             <% if(hasEvents == false) {%>
                 <p>Na tento den nejsou plánovány žádné události.</p>
+            <% } else {%>
+                <ul>
+                    <% events.forEach(function(event){ %>
+                        <li><%- event %></li>
+                    <%})%>
+                </ul>
             <% } %>
         </section>
         <section>
@@ -93,6 +99,7 @@
         </section>
     </main>
     <script src="/scripts/jquery-3.6.4.min.js"></script>
+    <script src="/scripts/my.js"></script>
     <script src="/scripts/logout.js"></script>
 </body> 
 </html>

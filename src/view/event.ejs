@@ -62,10 +62,6 @@
                     Název
                     <input type="text" <% if (hasData){ %> value="<%=eventFormName%>"<%}%> name="name" required>
                 </label>
-                <label>
-                    Popis
-                    <textarea name="description" required><% if (hasData){ %> value="<%=eventFormDescription%>"<%}%></textarea>
-                </label>
                 <p>Barva</p>
                 <label>
                     <input type="radio" <% if ((hasData && eventFormColor=="NONE") || hasData == false){ %> checked <% } %> name="color" value="NONE" required>
@@ -93,7 +89,7 @@
                     <input type="time" value="<%=eventFormTime%>" required name="time">
                 </label>
                 <button type="reset">Zpět</button>
-                <button type="submit">Přidat událost</button>
+                <button type="submit"><%= submitText %></button>
             </form>
         </section>
     </main>

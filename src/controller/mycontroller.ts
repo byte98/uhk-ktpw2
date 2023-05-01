@@ -77,7 +77,7 @@ export default class MyController implements IController{
                 templateData.dayAfter = "/my/" + DateUtils.formatDate(dayAfter);
                 templateData.monthBefore = "/my/" + DateUtils.formatDate(monthBefore);
                 templateData.monthAfter = "/my/" + DateUtils.formatDate(monthAfter);
-                templateData.calendar = this.generateCalendar(date);
+                templateData.calendar = await this.generateCalendar(date, user);
                 templateData.calendarDate = date.toLocaleDateString("cs-CZ", calendarDateOptions);
                 templateData.showToday = false;
                 templateData.newEventLink = "/my/event/" + DateUtils.formatDate(date);
@@ -89,7 +89,15 @@ export default class MyController implements IController{
 
                 templateData.hasEvents = false;
                 let events: Array<IEvent> = await EventModel.get(user, date);
-                console.log(events);
+                if (events.length > 0)
+                {
+                    templateData.hasEvents = true;
+                    templateData.events = Array();
+                    for (let i: number = 0; i < events.length; i++)
+                    {
+                        templateData.events.push(this.stringifyEvent(events[i]));
+                    }
+                }
                 reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "my.ejs"), "utf-8"), templateData);
             }
             else
@@ -109,7 +117,24 @@ export default class MyController implements IController{
      */
     private stringifyEvent(event: IEvent): string
     {
-        let reti: string = "<span class=\"event " + event.color.toLowerCase() + "\"><span class=\"start\">";
+        let reti: string =
+        "<span class=\"event " + event.color.toLowerCase() + "\">"
+            + "<span class=\"time\">"
+                + DateUtils.formatTime(event.date)
+            + "</span>"
+            + "<span class=\"name\">"
+                + event.name
+                    + "<span class=\"actions\">"
+                        +"<a href=\"/my/event/" + event.ident + "\" title=\"Upravit událost\">"
+                            + "✏️"
+                        + "</a>"
+                        +"<a class=\"delete\" href=\"/my/event/" + event.ident + "\" title=\"Smazat událost\">"
+                            + "❌"
+                            + "<form method=\"POST\" action=\"/my/event/" + event.ident + "?_method=DELETE\"></form>"
+                        + "</a>"
+                    +"</span>"
+            +"</span>"
+        +"</span>";
         
         return reti;
     }
@@ -117,22 +142,38 @@ export default class MyController implements IController{
     /**
      * Generates HTML table with calendar for defined month
      * @param date Date for which will be month calendar generated
+     * @param user User whose calendar will be generated
      * @returns HTML table with calendar for defined month
      */
-    private generateCalendar(date: Date): string {
+    private async generateCalendar(date: Date, user: IUser): Promise<string> {
         const currentMonth: Date = new Date(date.getFullYear(), date.getMonth(), 1);
       
         let reti: string = "<table>";      
         reti += "<thead><tr>";
         reti += "<th>Po</th><th>Út</th><th>St</th><th>Čt</th><th>Pá</th><th>So</th><th>Ne</th>";
         reti += "</tr></thead>";
-      
         reti += "<tbody>";
         while (currentMonth.getMonth() === date.getMonth()) {
           reti += "<tr>";
           for (let i: number = 1; i <= 7; i++) {
             if (currentMonth.getDay() === i % 7 && currentMonth.getFullYear() === date.getFullYear() && currentMonth.getMonth() === date.getMonth()) {
-              reti += `<td` + (currentMonth.getDate() === date.getDate() ? ` class="actual"` : ``) + `><a href="/my/` + DateUtils.formatDate(currentMonth) + `"><span>${currentMonth.getDate()}</span></a></td>`;
+            let noneCount: number = (await EventModel.getByColor(user, currentMonth, "NONE")).length;
+            let redCount: number = (await EventModel.getByColor(user, currentMonth, "RED")).length;
+            let yellowCount: number = (await EventModel.getByColor(user, currentMonth, "YELLOW")).length;
+            let greenCount: number = (await EventModel.getByColor(user, currentMonth, "GREEN")).length;
+            let blueCount: number = (await EventModel.getByColor(user, currentMonth, "BLUE")).length;
+              reti += `<td` + (currentMonth.getDate() === date.getDate() ? ` class="actual"` : ``) + `>
+                <a href="/my/` + DateUtils.formatDate(currentMonth) + `">
+                    <span class="day">${currentMonth.getDate()}</span>
+                    <span class="events">
+                        <span class="red` + (redCount == 0 ? ` hidden` : ``) +`">` + redCount.toString() + `</span>
+                        <span class="yellow` + (yellowCount == 0 ? ` hidden` : ``) +`">` + yellowCount.toString() + `</span>
+                        <span class="green` + (greenCount == 0 ? ` hidden` : ``) +`">` + greenCount.toString() + `</span>
+                        <span class="blue` + (blueCount == 0 ? ` hidden` : ``) +`">` + blueCount.toString() + `</span>
+                        <span class="none` + (noneCount == 0 ? ` hidden` : ``) +`">` + noneCount.toString() + `</span>
+                    </span>
+                </a>
+            </td>`;
               currentMonth.setDate(currentMonth.getDate() + 1);
             } else {
               reti += "<td></td>";

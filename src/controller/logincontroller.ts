@@ -25,6 +25,7 @@ import path from "path";
 import fs from 'fs';
 import UserModel, { IUser } from "../model/user";
 import {createHash} from "crypto";
+import DateUtils from "../utils/dateutils";
 
 /**
  * Class which represents controller of login page
@@ -79,12 +80,8 @@ export default class LoginController implements IController
             }
             else
             {
-                let today: Date = new Date();
-                let year: string = today.getFullYear().toString();
-                let month: string = ((today.getMonth() + 1) < 10) ? "0" + (today.getMonth() + 1).toString() : today.getMonth().toString();
-                let day: string = ((today.getDate() + 1) < 10) ? "0" + (today.getDate() + 1).toString() : today.getDate().toString();
                 req.session.user = user;
-                reti = new Redirect("/my/" + year  +"-" + month + "-" + day);
+                reti = new Redirect("/my/" + DateUtils.formatDate(new Date()));
             }
         }
         return reti;

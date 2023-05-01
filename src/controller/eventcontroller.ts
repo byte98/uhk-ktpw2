@@ -25,7 +25,7 @@ import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
 import DateUtils from "../utils/dateutils";
-import EventModel from "../model/event";
+import EventModel, { IEvent } from "../model/event";
 
 /**
  * Controller of event page
@@ -36,11 +36,52 @@ export default class EventController implements IController
         let reti: string | number | Redirect = 405;
         let user: IUser | null | undefined = req.session.user;
         let templateData: ejs.Data = new class implements ejs.Data{};
+        templateData.submitText = "Přidat událost";
         if (typeof(user) != "undefined" && user != null)
         {
 
             templateData.username = user.name + " " + user.surname + " (" + user.username + ")"
-            if (method == "GET")
+            if (typeof(req.params.id) != "undefined")
+            {
+                let event: IEvent | null = await EventModel.getById(req.params.id);
+                if (event != null && event.user == user.ident)
+                {
+                    if (method == "GET")
+                    {
+                        templateData.hasData = true;
+                        templateData.submitText = "Upravit událost";
+                        templateData.backLink = "/my/" + DateUtils.formatDate(event.date);
+                        templateData.eventName = event.name;
+                        templateData.eventFormId = event.ident;
+                        templateData.eventFormName = event.name;
+                        templateData.eventFormColor = event.color;
+                        templateData.eventFormDate = DateUtils.formatDate(event.date);
+                        templateData.eventFormTime = DateUtils.formatTime(event.date);
+                        reti = ejs.render(fs.readFileSync(path.join(process.cwd(), "dist", "view", "event.ejs"), "utf-8"), templateData);
+                    }
+                    else if (method == "POST")
+                    {
+                        let newName: string = (typeof (req.body.name) == "undefined") ? event.name : req.body.name;
+                        let newColor: "RED" | "YELLOW" | "GREEN" | "BLUE" | "NONE" = (typeof(req.body.color) == "undefined") ? event.color: req.body.color;
+                        let newDate: Date = (typeof (req.body.date) == "undefined" || typeof(req.body.time) == "undefined") ? event.date : new Date(req.body.date + "T" + req.body.time + ":00");
+                        await EventModel.update(event, newName, newColor, newDate);
+                        reti = new Redirect("/my/" + DateUtils.formatDate(newDate));
+                        reti.setMessage("INFO", "Událost byla úspěšně upravena");
+                    }
+                    else if (method == "DELETE")
+                    {
+                        await EventModel.delete(event);
+                        reti = new Redirect("/my/" + DateUtils.formatDate(event.date));
+                        reti.setMessage("INFO", "Událost byla úspěšně smazána");
+                    }
+                }
+                else
+                {
+                    reti = new Redirect("/my");
+                    reti.setMessage("ERROR", "Chyba - Neznámá událost!");
+                }
+            }
+            else if (method == "GET")
             {
                 let date = DateUtils.getValid(req.params.year, req.params.month, req.params.day);
                 let now = new Date();
@@ -67,24 +108,19 @@ export default class EventController implements IController
                 {
                     templateData.hasData = true;
                     templateData.eventFormName = req.body.name;
-                    templateData.eventFormDescription = "";
                     templateData.eventFormColor = "NONE";
                     templateData.eventFormId = "/my/event/" + DateUtils.formatDate(date);
-                    if (typeof(req.body.description) != "undefined")
+                    if (typeof(req.body.color) != "undefined" && (req.body.color == "NONE" || req.body.color == "RED" || req.body.color == "YELLOW" || req.body.color == "GREEN" || req.body.color == "BLUE"))
                     {
-                        templateData.eventFormDescription = req.body.description;
-                        if (typeof(req.body.color) != "undefined" && (req.body.color == "NONE" || req.body.color == "RED" || req.body.color == "YELLOW" || req.body.color == "GREEN" || req.body.color == "BLUE"))
-                        {
-                            templateData.eventFormColor = req.body.color;
+                        templateData.eventFormColor = req.body.color;
 
-                            if (typeof(req.body.date) != "undefined")
+                        if (typeof(req.body.date) != "undefined")
+                        {
+                            templateData.eventFormDate = req.body.date;
+                            if (typeof(req.body.time) != "undefined")
                             {
-                                templateData.eventFormDate = req.body.date;
-                                if (typeof(req.body.time) != "undefined")
-                                {
-                                    templateData.eventFormTime = req.body.time;
-                                    correct = true;
-                                }
+                                templateData.eventFormTime = req.body.time;
+                                correct = true;
                             }
                         }
                     }
@@ -92,7 +128,7 @@ export default class EventController implements IController
                 if (correct)
                 {
                     let date: Date = new Date(req.body.date + "T" + req.body.time + ":00");
-                    await EventModel.create(req.body.name, req.body.description, req.body.color.toUpperCase(), date, user);
+                    await EventModel.create(req.body.name, req.body.color.toUpperCase(), date, user);
                     reti = new Redirect("/my");
                     reti.setMessage("INFO", "Událost byla úspěšně vytvořena");
                 }

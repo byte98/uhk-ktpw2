@@ -30,11 +30,6 @@ export interface IEvent
     name: string;
 
     /**
-     * Description of event
-     */
-    description: string;
-
-    /**
      * Date of the event
      */
     date: Date;
@@ -60,7 +55,6 @@ export interface IEvent
  */
 const eventSchema = new Schema<IEvent>({
     name: {type: String, required: true},
-    description: {type: String, required: true},
     color: {type: String, required: true},
     user: {type: String, required: true},
     date: {type: Date, required: true},
@@ -79,19 +73,17 @@ export default class EventModel{
     /**
      * Creates new event
      * @param name Name of event
-     * @param description Description event
      * @param color Color of event
      * @param date Date of event
      * @param user Author of event
      */
     public static async create(
-        name: string, description: string, color: "RED" | "YELLOW" | "GREEN" | "BLUE" | "NONE", date: Date, user: IUser
+        name: string, color: "RED" | "YELLOW" | "GREEN" | "BLUE" | "NONE", date: Date, user: IUser
     )
     {
         await mongoose.connect(Configuration.db);
         const event = new Event({
             name: name,
-            description: description,
             color: color,
             date: date,
             user: user.ident
@@ -101,27 +93,118 @@ export default class EventModel{
 
     /**
      * Gets all users events for specified date
-     * @param user User which events will be returned
+     * @param user User whose events will be returned
      * @param date Date of events
      * @returns Array with all users events for specified date
      */
     public static async get(user: IUser, date: Date): Promise<Array<IEvent>>
     {
-        let reti: Array<IEvent> = new Array();
+        let reti: Array<IEvent> = new Array<IEvent>();
         let connection: typeof mongoose;
         connection =  await mongoose.connect(Configuration.db);
-        let query :mongoose.Query<any | null, {}, {}, IEvent> =  Event.find({user: user.ident}).sort("start");
+        let start = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+        let end   = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+        let query :mongoose.Query<any | null, {}, {}, IEvent> =  Event.find({user: user.ident, date: {$gte: start, $lte: end}}).sort("date");
+        let result: Array<any> | null = await query.exec();
+        if (result != null && result.length > 0)
+        {
+            for (let i: number = 0; i < result.length; i++)
+            {
+                let item: any = result[i];
+                reti.push(new class implements IEvent{
+                    name: string = item.name;
+                    color: "RED" | "YELLOW" | "GREEN" | "BLUE" | "NONE" = item.color;
+                    date: Date = item.date;
+                    user: string = item.user;
+                    ident: string = item._id.toString();
+                });
+            }
+        }
+        return reti;
+    }
+
+    /**
+     * Gets all user events for specified date and color
+     * @param user User whose events will be returned
+     * @param date Date of events
+     * @param color Color of events
+     * @returns Array with all users events for specified date and color
+     */
+    public static async getByColor(user: IUser, date: Date, color: "NONE" | "RED" | "YELLOW" | "GREEN" | "BLUE"): Promise<Array<IEvent>>
+    {
+        let reti: Array<IEvent> = new Array<IEvent>();
+        let connection: typeof mongoose;
+        connection =  await mongoose.connect(Configuration.db);
+        let start = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+        let end   = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+        let query :mongoose.Query<any | null, {}, {}, IEvent> =  Event.find({user: user.ident, date: {$gte: start, $lte: end}, color: color}).sort("date");
         let result: Array<IEvent> | null = await query.exec();
         if (result != null && result.length > 0)
         {
             for (let i: number = 0; i < result.length; i++)
             {
-                if (result[i].date.getDate() == date.getDate() && result[i].date.getMonth() == date.getMonth() && result[i].date.getFullYear() == date.getFullYear())
-                {
-                    reti.push(result[i]);
-                }
+                let item: any = result[i];
+                reti.push(new class implements IEvent{
+                    name: string = item.name;
+                    color: "RED" | "YELLOW" | "GREEN" | "BLUE" | "NONE" = item.color;
+                    date: Date = item.date;
+                    user: string = item.user;
+                    ident: string = item._id.toString();
+                });
             }
         }
         return reti;
+    }
+
+    /**
+     * Gets event by its identifier
+     * @param id Identifier of event
+     * @returns Event with searched identifier or NULL, if there is no such event
+     */
+    public static async getById(id: string): Promise<IEvent | null>
+    {
+        let reti: IEvent | null = null;
+        let connection: typeof mongoose;
+        connection =  await mongoose.connect(Configuration.db);
+        let query :mongoose.Query<any | null, {}, {}, IEvent> =  Event.findById(id);
+        let result: any | null = await query.exec();
+        if (result != null)
+        {
+            reti = new class implements IEvent{
+                name: string = result.name;
+                color: "RED" | "YELLOW" | "GREEN" | "BLUE" | "NONE" = result.color;
+                date: Date = result.date;
+                user: string = result.user;
+                ident: string = result._id.toString();
+            };
+        }
+        return reti;
+    }
+
+    /**
+     * Updates event
+     * @param event Event which will be updated
+     * @param name New name of event
+     * @param color New color of event
+     * @param date New date and time of event
+     */
+    public static async update(event: IEvent, name: string, color: "RED" | "YELLOW" | "GREEN" | "BLUE" | "NONE", date: Date): Promise<void>
+    {
+        let connection: typeof mongoose;
+        connection =  await mongoose.connect(Configuration.db);
+        let query :mongoose.Query<any | null, {}, {}, IEvent> =  Event.findByIdAndUpdate(event.ident, {name: name, color: color, date: date});
+        await query.exec();
+    }
+
+    /**
+     * Deletes event
+     * @param event Event which will be deleted
+     */
+    public static async delete(event: IEvent): Promise<void>
+    {
+        let connection: typeof mongoose;
+        connection =  await mongoose.connect(Configuration.db);
+        let query :mongoose.Query<any | null, {}, {}, IEvent> =  Event.findByIdAndDelete(event.ident);
+        await query.exec();
     }
 }
