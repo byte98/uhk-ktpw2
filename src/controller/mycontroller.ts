@@ -25,7 +25,7 @@ import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
 import DateUtils from "../utils/dateutils";
-import EventModel, { IEvent } from "../model/event";
+import { EventModel, IEvent } from "../model/event";
 
 /**
  * Class which controls my calendar page

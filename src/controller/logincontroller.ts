@@ -23,7 +23,7 @@ import Redirect from "../utils/redirect";
 import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
-import UserModel, { IUser } from "../model/user";
+import { UserModel, IUser } from "../model/user";
 import {createHash} from "crypto";
 import DateUtils from "../utils/dateutils";
 

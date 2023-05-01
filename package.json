@@ -4,14 +4,12 @@
   "description": "Package which contains my semestral project done for subject 'Technologies for Web Publishing II' at Faculty of Informatics and Management, University of Hradec Králové.",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx rimraf ./dist && npx tsc --build && npx copyfiles -f ./src/public/styles/*.* ./dist/public/styles/ && npx copyfiles -f ./src/public/scripts/*.js ./dist/public/scripts/ && npx copyfiles -f ./src/public/images/*.* ./dist/public/images/ && npx copyfiles -f ./src/public/icons/*.* ./dist/public/icons/ && npx copyfiles -f ./src/view/*.* ./dist/view/",
-    "start": "npm run db & node ./dist/index.js",
-    "startdebug": "npm run db & node ./dist/index.js -D",
-    "prod": "npm run build && npm run start",
-    "debug": "npm run build && npm run startdebug",
+    "app": "node ./dist/index.js",
+    "debug": "node ./dist/index.js -D",
     "db": "mongod --dbpath ./db --port 27017 > /dev/null",
-    "dbverbose": "mongod --dbpath ./db --port 27017"
+    "dbverbose": "mongod --dbpath ./db --port 27017",
+    "make": "node ./src/Makefile.js",
+    "MAKE": "node ./src/Makefile.js"
   },
   "repository": {
     "type": "git",
@@ -45,8 +43,10 @@
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.3",
     "nodemon": "^2.0.22",
+    "prompt-sync": "^4.2.0",
     "rimraf": "^4.4.1",
     "tsc": "^2.0.4",
-    "typescript": "^5.0.3"
+    "typescript": "^5.0.3",
+    "uglify-js": "^3.17.4"
   }
 }

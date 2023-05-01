@@ -20,7 +20,7 @@ import IController from "./icontroller";
 import ejs from "ejs";
 import path from "path";
 import fs from 'fs';
-import UserModel, { IUser, User } from "../model/user";
+import { IUser, UserModel } from "../model/user";
 import Redirect from "../utils/redirect";
 
 /**

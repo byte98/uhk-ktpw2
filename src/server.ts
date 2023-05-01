@@ -188,10 +188,7 @@ export default class Server
     {
         this.init();
         this.app.listen(Number(this.port), () => {
-            if (Configuration.debug)
-            {
-                console.info("Server started (port: " + this.port +")");
-            }
+            console.info("Server started (port: " + this.port +")");
         });
     }
 }

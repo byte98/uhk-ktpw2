@@ -76,7 +76,7 @@ export const User = model<IUser>("User", userSchema);
 /**
  * Class which can handle all operations over users
  */
-export default class UserModel{
+export class UserModel{
     
     /**
      * Gets user by its username

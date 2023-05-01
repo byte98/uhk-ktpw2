@@ -68,7 +68,7 @@ export const Event = model<IEvent>("Event", eventSchema);
 /**
  * Class which handles all operations over events
  */
-export default class EventModel{
+export class EventModel{
 
     /**
      * Creates new event
