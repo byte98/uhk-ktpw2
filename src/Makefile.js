@@ -331,7 +331,7 @@ async function createUser()
     let inSysUser = await UserModel.getByUsername(uname);
     while(inSysUser != null)
     {
-        process.stdout.write("⛔️ Entered user is already in database!");
+        process.stdout.write("⛔️ Entered user is already in database!\n");
         uname = prompt("Enter username: ");
         inSysUser = await UserModel.getByUsername(uname);
     }
@@ -348,12 +348,12 @@ async function createEvents()
 {
     process.stdout.write("Creating events in dataset...\t\t");
     let now = new Date();
-    let start = new Date(now.getFullYear() - 1, 0, 1, 0, 0, 0);
-    let end = new Date(now.getFullYear() + 1, 11, 31, 0, 0, 0);
+    let start = new Date(now.getFullYear() - 5, 0, 1, 0, 0, 0);
+    let end = new Date(now.getFullYear() + 5, 11, 31, 0, 0, 0);
     let colors = ["NONE", "RED", "YELLOW", "GREEN", "BLUE"];
     for (let d = start; d <= end; d.setDate(d.getDate() +1))
     {
-        let eventCount = Math.random() * 11; // Max 10 events in one day
+        let eventCount = (Math.random() * 6) - 1; // Max 5 events in one day
         for (let i = 0; i < eventCount; i++)
         {
             let name = events[Math.floor(Math.random() * events.length)];

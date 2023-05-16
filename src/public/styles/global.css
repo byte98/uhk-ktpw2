@@ -52,3 +52,13 @@ form#logout, form#logout a{
     display: inline;
 }
 
+html > body > footer{
+    margin-top: 5rem;
+    width: 100%;
+    background-color: var(--background-alt);
+    font-size: 10pt;
+}
+
+footer p{
+    margin: 0;
+}
